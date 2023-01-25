@@ -1,0 +1,48 @@
+-- The C compiler identification is GNU 11.3.0
+-- The CXX compiler identification is GNU 11.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.3 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3.10 (found version "3.10.6") found components: Interpreter 
+-- Found ament_lint_auto: 0.12.4 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Added test 'cppcheck' to perform static code analysis on C / C++ code
+-- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/kssvm/workspace/ros2/humble/kssbot/kssbot/src/motorctrl/include>;$<BUILD_INTERFACE:/home/kssvm/workspace/ros2/humble/kssbot/kssbot/src/motorctrl/sdk/raspmotorctrl>
+-- Configured cppcheck exclude dirs and/or files: 
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'uncrustify' to check C / C++ code style
+-- Configured uncrustify additional arguments: 
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/motorctrl
+[ 25%] [32mBuilding CXX object CMakeFiles/raspmotorctrl.dir/sdk/raspmotorctrl/raspmotorctrl.cpp.o[0m
+[ 50%] [32m[1mLinking CXX static library libraspmotorctrl.a[0m
+[ 50%] Built target raspmotorctrl
+[ 75%] [32mBuilding CXX object CMakeFiles/motorctrl.dir/src/motorctrl.cpp.o[0m
+[100%] [32m[1mLinking CXX executable motorctrl[0m
+[100%] Built target motorctrl
+-- Install configuration: ""
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/lib/motorctrl/motorctrl
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/ament_index/resource_index/package_run_dependencies/motorctrl
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/ament_index/resource_index/parent_prefix_path/motorctrl
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/ament_prefix_path.sh
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/ament_prefix_path.dsv
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/path.sh
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/path.dsv
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.bash
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.sh
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.zsh
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.dsv
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/package.dsv
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/ament_index/resource_index/packages/motorctrl
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/cmake/motorctrlConfig.cmake
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/cmake/motorctrlConfig-version.cmake
+-- Installing: /home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/package.xml

@@ -1,0 +1,16 @@
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/lib/motorctrl/motorctrl
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/ament_index/resource_index/package_run_dependencies/motorctrl
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/ament_index/resource_index/parent_prefix_path/motorctrl
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/ament_prefix_path.sh
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/ament_prefix_path.dsv
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/path.sh
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/environment/path.dsv
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.bash
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.sh
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.zsh
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/local_setup.dsv
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/package.dsv
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/ament_index/resource_index/packages/motorctrl
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/cmake/motorctrlConfig.cmake
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/cmake/motorctrlConfig-version.cmake
+/home/kssvm/workspace/ros2/humble/kssbot/kssbot/install/motorctrl/share/motorctrl/package.xml

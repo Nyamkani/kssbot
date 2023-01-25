@@ -33,7 +33,6 @@ def generate_launch_description():
                         ('/cmd_vel_out','/diff_cont/cmd_vel')]
          )
 
-
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',

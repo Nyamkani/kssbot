@@ -1,0 +1,4 @@
+source;share/kssbot_description/local_setup.bash
+source;share/kssbot_description/local_setup.dsv
+source;share/kssbot_description/local_setup.sh
+source;share/kssbot_description/local_setup.zsh
