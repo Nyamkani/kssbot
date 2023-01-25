@@ -1,26 +1,19 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
-
+from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
 
-
+import os
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
 
-    joy_params = PathJoinSubstitution(
-        [
-            FindPackageShare("kss_joystick"),
-            "config",
-            "joystick.yaml",
-        ]
-    )
+    joy_params = os.path.join(get_package_share_directory('kss_joystick'),'config','joystick.yaml')
 
     joy_node = Node(
-            package='kss_joystick',
-            executable='joystick_node',
+            package='joy',
+            executable='joy_node',
             parameters=[joy_params, {'use_sim_time': use_sim_time}],
          )
 
@@ -40,18 +33,12 @@ def generate_launch_description():
                         ('/cmd_vel_out','/diff_cont/cmd_vel')]
          )
 
-    nodes = [
-        joy_node,
-        teleop_node,
-    ]
-
     return LaunchDescription([
-
         DeclareLaunchArgument(
             'use_sim_time',
             default_value='false',
             description='Use sim time if true'),
-            nodes,
+        joy_node,
+        teleop_node,
         # twist_stamper       
     ])
-
