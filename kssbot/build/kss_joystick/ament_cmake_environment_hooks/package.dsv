@@ -1,0 +1,4 @@
+source;share/kss_joystick/local_setup.bash
+source;share/kss_joystick/local_setup.dsv
+source;share/kss_joystick/local_setup.sh
+source;share/kss_joystick/local_setup.zsh
