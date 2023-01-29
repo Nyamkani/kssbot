@@ -1,2 +1,0 @@
-/usr/bin/ar qc libraspmotorctrl.a CMakeFiles/raspmotorctrl.dir/sdk/raspmotorctrl/raspmotorctrl.cpp.o
-/usr/bin/ranlib libraspmotorctrl.a
