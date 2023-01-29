@@ -1,9 +1,0 @@
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/uninstall.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/kssbot_description_uninstall.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/test.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/edit_cache.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/rebuild_cache.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/list_install_components.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/install.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/install/local.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kssbot_description/CMakeFiles/install/strip.dir

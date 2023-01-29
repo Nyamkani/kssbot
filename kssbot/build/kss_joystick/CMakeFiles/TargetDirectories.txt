@@ -1,9 +1,0 @@
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/uninstall.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/kss_joystick_uninstall.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/test.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/edit_cache.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/rebuild_cache.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/list_install_components.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/install.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/install/local.dir
-/home/kssvm/workspace/ros2/humble/kssbot/kssbot/build/kss_joystick/CMakeFiles/install/strip.dir

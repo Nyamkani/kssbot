@@ -1,8 +1,0 @@
-source;share/motorctrl/hook/cmake_prefix_path.ps1
-source;share/motorctrl/hook/cmake_prefix_path.dsv
-source;share/motorctrl/hook/cmake_prefix_path.sh
-source;share/motorctrl/local_setup.bash
-source;share/motorctrl/local_setup.dsv
-source;share/motorctrl/local_setup.ps1
-source;share/motorctrl/local_setup.sh
-source;share/motorctrl/local_setup.zsh

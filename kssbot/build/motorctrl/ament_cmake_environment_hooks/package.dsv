@@ -1,4 +1,0 @@
-source;share/motorctrl/local_setup.bash
-source;share/motorctrl/local_setup.dsv
-source;share/motorctrl/local_setup.sh
-source;share/motorctrl/local_setup.zsh

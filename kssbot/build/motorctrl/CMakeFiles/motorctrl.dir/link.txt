@@ -1,1 +1,0 @@
-/usr/bin/c++ -pthread -I/usr/local/include -L/usr/local/lib -lwiringPi CMakeFiles/motorctrl.dir/src/motorctrl.cpp.o -o motorctrl  libraspmotorctrl.a /usr/lib/x86_64-linux-gnu/libwiringPi.so 
