@@ -1,0 +1,4 @@
+source;share/kssbot_diffdrive_rasp4/local_setup.bash
+source;share/kssbot_diffdrive_rasp4/local_setup.dsv
+source;share/kssbot_diffdrive_rasp4/local_setup.sh
+source;share/kssbot_diffdrive_rasp4/local_setup.zsh
