@@ -1,4 +1,4 @@
-<library path="kssbot_diffdrive">
+<library path="kssbot_diffdrive_lib">
 
   <class name="kssbot_hardware/kssbot_diffdrive_rasp4"
          type="kssbot_hardware::kssbot_diffdrive_rasp4"

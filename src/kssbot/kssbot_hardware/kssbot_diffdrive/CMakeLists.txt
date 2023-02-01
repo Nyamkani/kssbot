@@ -13,6 +13,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(hardware_interface REQUIRED)
+find_package(controller_manager REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
@@ -21,49 +22,43 @@ find_package(rclcpp_lifecycle REQUIRED)
 # Link against wiringPi
 SET(CMAKE_CXX_FLAGS "-pthread -I/usr/local/include -L/usr/local/lib -lwiringPi")
 
-find_library(WIRINGPI_LIBRARIES wiringPi)
-
-
-#add_library(WIRINGPI_LIBRARIES STATIC sdk/raspmotorctrl/raspmotorctrl.cpp)
-
-#target_include_directories(WIRINGPI_LIBRARIES PUBLIC ${CMAKE_SOURCE_DIR}/includes)
-
-#target_compile_options(WIRINGPI_LIBRARIES PRIVATE -Wall -Werror)
-
-
-#TARGET_LINK_LIBRARIES(kssbot_diffdrive WIRINGPI_LIBRARIES)
-
-## COMPILE
-add_library(
-  ${PROJECT_NAME} 
-  SHARED
-  ${WIRINGPI_LIBRARIES}
+# COMPILE
+add_library(${PROJECT_NAME}_lib SHARED
   src/kssbot_diffdrive.cpp 
   src/raspmotorctrl.cpp 
 )
-target_include_directories(${PROJECT_NAME} PRIVATE
+
+find_library(WIRINGPI_LIBRARIES wiringPi)
+
+target_link_libraries(${PROJECT_NAME}_lib ${WIRINGPI_LIBRARIES})
+
+
+target_include_directories(${PROJECT_NAME}_lib PRIVATE
   include
-  WIRINGPI_LIBRARIES
-  #sdk/raspmotorctrl
 )
+
 ament_target_dependencies(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_lib
   hardware_interface
+  controller_manager
   pluginlib
   rclcpp
   rclcpp_lifecycle
 )
 
+#target_link_libraries(${PROJECT_NAME} ${/usr/local/lib/libwiringPi.so})
+
+
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "KSSBOT_HARDWARE_BUILDING_DLL")
+target_compile_definitions(${PROJECT_NAME}_lib PRIVATE "KSSBOT_HARDWARE_BUILDING_DLL")
 
 # Export hardware pligins
 pluginlib_export_plugin_description_file(hardware_interface interface/kssbot_hardware.xml)
 
 # INSTALL
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME}_lib
   DESTINATION lib
 )
 install(
@@ -80,10 +75,11 @@ ament_export_include_directories(
   include
 )
 ament_export_libraries(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_lib
 )
 ament_export_dependencies(
   hardware_interface
+  controller_manager
   pluginlib
   rclcpp
   rclcpp_lifecycle

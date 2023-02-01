@@ -31,7 +31,7 @@
 #include "rclcpp_lifecycle/state.hpp"
 
 #include "kssbot_diffdrive/visibility_control.h"
-#include "kssbot_diffdrive/raspmotorctrl.hpp"
+#include "raspmotorctrl.hpp"
 
 
 namespace kssbot_hardware
