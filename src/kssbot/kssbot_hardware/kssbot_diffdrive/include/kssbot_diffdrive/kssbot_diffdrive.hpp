@@ -29,9 +29,10 @@
 #include "rclcpp/time.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-#include "kssbot_hardware/visibility_control.h"
 
-#include "raspmotorctrl.hpp"
+#include "kssbot_diffdrive/visibility_control.h"
+#include "kssbot_diffdrive/raspmotorctrl.hpp"
+
 
 namespace kssbot_hardware
 {

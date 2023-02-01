@@ -12,7 +12,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>kssbot_description</exec_depend>
-  <exec_depend>kssbot_hardware</exec_depend>
+  <exec_depend>kssbot_diffdrive</exec_depend>
   
   <exec_depend>joint_state_broadcaster</exec_depend>
   <exec_depend>joint_trajectory_controller</exec_depend>

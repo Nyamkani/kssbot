@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(kssbot_diffdrive_rasp4)
+project(kssbot_diffdrive)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -17,26 +17,35 @@ find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
+
 # Link against wiringPi
 SET(CMAKE_CXX_FLAGS "-pthread -I/usr/local/include -L/usr/local/lib -lwiringPi")
 
-add_library(raspmotorctrl STATIC sdk/raspmotorctrl/raspmotorctrl.cpp)
-
 find_library(WIRINGPI_LIBRARIES wiringPi)
 
-target_link_libraries(raspmotorctrl ${WIRINGPI_LIBRARIES})
+
+#add_library(WIRINGPI_LIBRARIES STATIC sdk/raspmotorctrl/raspmotorctrl.cpp)
+
+#target_include_directories(WIRINGPI_LIBRARIES PUBLIC ${CMAKE_SOURCE_DIR}/includes)
+
+#target_compile_options(WIRINGPI_LIBRARIES PRIVATE -Wall -Werror)
+
+
+#TARGET_LINK_LIBRARIES(kssbot_diffdrive WIRINGPI_LIBRARIES)
 
 ## COMPILE
 add_library(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME} 
   SHARED
-  src/kssbot_diffdrive_rasp4.cpp
+  ${WIRINGPI_LIBRARIES}
+  src/kssbot_diffdrive.cpp 
+  src/raspmotorctrl.cpp 
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sdk/raspmotorctrl>
-  $<INSTALL_INTERFACE:include>)
-
+  include
+  WIRINGPI_LIBRARIES
+  #sdk/raspmotorctrl
+)
 ament_target_dependencies(
   ${PROJECT_NAME}
   hardware_interface
@@ -47,14 +56,14 @@ ament_target_dependencies(
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "KSS_HARDWARE_BUILDING_DLL")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "KSSBOT_HARDWARE_BUILDING_DLL")
 
 # Export hardware pligins
 pluginlib_export_plugin_description_file(hardware_interface interface/kssbot_hardware.xml)
 
 # INSTALL
-install( TARGETS ${PROJECT_NAME}
-  EXPORT export_${PROJECT_NAME}
+install(
+  TARGETS ${PROJECT_NAME}
   DESTINATION lib
 )
 install(
@@ -63,16 +72,7 @@ install(
 )
 
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
 endif()
 
 ## EXPORTS
@@ -82,10 +82,6 @@ ament_export_include_directories(
 ament_export_libraries(
   ${PROJECT_NAME}
 )
-ament_export_targets(
-  export_${PROJECT_NAME}
-)
-
 ament_export_dependencies(
   hardware_interface
   pluginlib

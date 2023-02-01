@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "kssbot_hardware/kssbot_diffdrive_rasp4.hpp"
+#include "kssbot_diffdrive/kssbot_diffdrive.hpp"
 
 #include <chrono>
 #include <cmath>
