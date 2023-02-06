@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(kssbot_diffdrive)
+project(kssbot_hardware)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -18,27 +18,29 @@ find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
+# add moudules
+add_subdirectory(modules/kssbot_diffdrive)
+#add ros2_control library here
 
-# Link against wiringPi
-SET(CMAKE_CXX_FLAGS "-pthread -I/usr/local/include -L/usr/local/lib -lwiringPi")
 
-# COMPILE
-add_library(${PROJECT_NAME}_lib SHARED
-  src/kssbot_diffdrive.cpp 
-  src/raspmotorctrl.cpp 
+#using this for linking this cmakelist
+add_library(${PROJECT_NAME} SHARED
+  src/test.cpp
 )
 
-find_library(WIRINGPI_LIBRARIES wiringPi)
-
-target_link_libraries(${PROJECT_NAME}_lib ${WIRINGPI_LIBRARIES})
-
-
-target_include_directories(${PROJECT_NAME}_lib PRIVATE
-  include
+# link modules
+target_link_libraries(${PROJECT_NAME} 
+  kssbot_diffdrive
+  #add ros2_control library here
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC 
+  include 
+)
+
 
 ament_target_dependencies(
-  ${PROJECT_NAME}_lib
+  ${PROJECT_NAME}
   hardware_interface
   controller_manager
   pluginlib
@@ -46,24 +48,21 @@ ament_target_dependencies(
   rclcpp_lifecycle
 )
 
-#target_link_libraries(${PROJECT_NAME} ${/usr/local/lib/libwiringPi.so})
-
-
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME}_lib PRIVATE "KSSBOT_HARDWARE_BUILDING_DLL")
+target_compile_definitions(${PROJECT_NAME} PRIVATE 
+  "KSSBOT_HARDWARE_BUILDING_DLL"
+)
 
 # Export hardware pligins
-pluginlib_export_plugin_description_file(hardware_interface interface/kssbot_hardware.xml)
+pluginlib_export_plugin_description_file(hardware_interface 
+  interface/kssbot_hardware.xml
+)
 
 # INSTALL
 install(
-  TARGETS ${PROJECT_NAME}_lib
+  TARGETS ${PROJECT_NAME}
   DESTINATION lib
-)
-install(
-  DIRECTORY include/
-  DESTINATION include
 )
 
 if(BUILD_TESTING)
@@ -75,7 +74,7 @@ ament_export_include_directories(
   include
 )
 ament_export_libraries(
-  ${PROJECT_NAME}_lib
+  ${PROJECT_NAME}
 )
 ament_export_dependencies(
   hardware_interface
