@@ -1,5 +1,4 @@
-#include "kssbot_diffdrive/wheel.h"
-
+#include "kssbot_diffdrive/wheel.hpp"
 #include <cmath>
 
 
@@ -20,7 +19,7 @@
 //   return enc * rads_per_count;
 // }
 
-Wheel::Wheel(const std::string &wheel_name,)
+Wheel::Wheel(const std::string &wheel_name)
 {
   setup(wheel_name);
 }
