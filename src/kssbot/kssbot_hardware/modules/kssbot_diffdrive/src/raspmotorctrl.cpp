@@ -359,6 +359,28 @@ void raspmotor::RightMotorDriveSaveQueue(pwm_motor_val data)
 }
 
 
+void raspmotor::LinkRosToRasp(int l_motor_cmd, int r_motor_cmd)
+{
+
+    int l_motor_cmd_ = l_motor_cmd * motor_vel;
+    int l_dir = forward;
+    int r_motor_cmd_ = r_motor_cmd * motor_vel;
+    int r_dir= forward;
+
+    if(l_motor_cmd_< 0) l_dir = backward;
+    if(r_motor_cmd_< 0) r_dir = backward;
+
+    pwm_left_motor_queue.clear();
+    
+    pwm_right_motor_queue.clear();
+
+    LeftMotorControl(l_dir, l_motor_cmd_);
+
+    RightMotorControl(r_dir, l_motor_cmd_);
+
+    return;
+}
+
 
 void raspmotor::StopMotor()
 {

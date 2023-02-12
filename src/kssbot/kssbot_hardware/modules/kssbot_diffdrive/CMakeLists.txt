@@ -45,6 +45,12 @@ ament_target_dependencies(
   rclcpp_lifecycle
 )
 
+# INSTALL
+install(
+  TARGETS ${PROJECT_NAME}
+  DESTINATION lib
+)
+
 install(
   DIRECTORY include/
   DESTINATION include

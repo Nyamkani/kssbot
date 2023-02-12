@@ -23,6 +23,8 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+
+
 namespace kssbot_hardware
 {
 hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
@@ -34,23 +36,19 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
   {
     return hardware_interface::CallbackReturn::ERROR;
   }
+ 
+  //get data from launch parameters
+  cfg_.left_wheel_name = info_.hardware_parameters["left_wheel_name"];
+  cfg_.right_wheel_name = info_.hardware_parameters["right_wheel_name"];
+  cfg_.loop_rate = std::stof(info_.hardware_parameters["loop_rate"]);
 
-  if(this->raspmotor_ == NULL) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 3, 3);
+  // Set up the wheels
+  l_wheel_.setup(cfg_.left_wheel_name);
+  r_wheel_.setup(cfg_.right_wheel_name);
 
-  this->raspmotor_->Initialize();
+  rclcpp::get_logger("kssbot_hardware Initialize");
 
-
-  base_x_ = 0.0;
-  base_y_ = 0.0;
-  base_theta_ = 0.0;
-
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  hw_start_sec_ = std::stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
-  hw_stop_sec_ = std::stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
-  hw_positions_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-  hw_velocities_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-  hw_commands_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
+  //main rasp4 motor end
 
   for (const hardware_interface::ComponentInfo & joint : info_.joints)
   {
@@ -58,7 +56,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
     if (joint.command_interfaces.size() != 1)
     {
       RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
+        rclcpp::get_logger("Kssbot_diffdrive"),
         "Joint '%s' has %zu command interfaces found. 1 expected.", joint.name.c_str(),
         joint.command_interfaces.size());
       return hardware_interface::CallbackReturn::ERROR;
@@ -67,7 +65,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
     if (joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
     {
       RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
+        rclcpp::get_logger("Kssbot_diffdrive"),
         "Joint '%s' have %s command interfaces found. '%s' expected.", joint.name.c_str(),
         joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_VELOCITY);
       return hardware_interface::CallbackReturn::ERROR;
@@ -76,7 +74,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
     if (joint.state_interfaces.size() != 2)
     {
       RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
+        rclcpp::get_logger("Kssbot_diffdrive"),
         "Joint '%s' has %zu state interface. 2 expected.", joint.name.c_str(),
         joint.state_interfaces.size());
       return hardware_interface::CallbackReturn::ERROR;
@@ -85,7 +83,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
     if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
     {
       RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
+        rclcpp::get_logger("kssbot_hardware"),
         "Joint '%s' have '%s' as first state interface. '%s' expected.", joint.name.c_str(),
         joint.state_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION);
       return hardware_interface::CallbackReturn::ERROR;
@@ -94,7 +92,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
     if (joint.state_interfaces[1].name != hardware_interface::HW_IF_VELOCITY)
     {
       RCLCPP_FATAL(
-        rclcpp::get_logger("DiffBotSystemHardware"),
+        rclcpp::get_logger("kssbot_hardware"),
         "Joint '%s' have '%s' as second state interface. '%s' expected.", joint.name.c_str(),
         joint.state_interfaces[1].name.c_str(), hardware_interface::HW_IF_VELOCITY);
       return hardware_interface::CallbackReturn::ERROR;
@@ -104,135 +102,130 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
+
+
 std::vector<hardware_interface::StateInterface> kssbot_diffdrive_rasp4::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
-  for (auto i = 0u; i < info_.joints.size(); i++)
-  {
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_positions_[i]));
-    state_interfaces.emplace_back(hardware_interface::StateInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_velocities_[i]));
-  }
+
+  state_interfaces.emplace_back(hardware_interface::StateInterface(l_wheel_.name, hardware_interface::HW_IF_VELOCITY, &l_wheel_.vel));
+  state_interfaces.emplace_back(hardware_interface::StateInterface(l_wheel_.name, hardware_interface::HW_IF_POSITION, &l_wheel_.pos));
+  state_interfaces.emplace_back(hardware_interface::StateInterface(r_wheel_.name, hardware_interface::HW_IF_VELOCITY, &r_wheel_.vel));
+  state_interfaces.emplace_back(hardware_interface::StateInterface(r_wheel_.name, hardware_interface::HW_IF_POSITION, &r_wheel_.pos));
 
   return state_interfaces;
 }
 
+
+
 std::vector<hardware_interface::CommandInterface> kssbot_diffdrive_rasp4::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
-  for (auto i = 0u; i < info_.joints.size(); i++)
-  {
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_commands_[i]));
-  }
+
+  command_interfaces.emplace_back(hardware_interface::CommandInterface(l_wheel_.name, hardware_interface::HW_IF_VELOCITY, &l_wheel_.cmd));
+  command_interfaces.emplace_back(hardware_interface::CommandInterface(r_wheel_.name, hardware_interface::HW_IF_VELOCITY, &r_wheel_.cmd));
 
   return command_interfaces;
 }
 
+
+
 hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Activating ...please wait...");
+  rclcpp::get_logger("Activating Controller!");
+  //rasp4 motor driver initialize
 
-  for (auto i = 0; i < hw_start_sec_; i++)
-  {
-    rclcpp::sleep_for(std::chrono::seconds(1));
-    RCLCPP_INFO(
-      rclcpp::get_logger("DiffBotSystemHardware"), "%.1f seconds left...", hw_start_sec_ - i);
-  }
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
+  //main rasp4 motor start
+  if(this->raspmotor_ == NULL) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 3, 3);
+
+  this->raspmotor_->Initialize();
+  
+  if(!(this->raspmotor_)) return hardware_interface::CallbackReturn::ERROR;
 
   // set some default values
-  for (auto i = 0u; i < hw_positions_.size(); i++)
-  {
-    if (std::isnan(hw_positions_[i]))
-    {
-      hw_positions_[i] = 0;
-      hw_velocities_[i] = 0;
-      hw_commands_[i] = 0;
-    }
-  }
+  // l_wheel_.cmd = 0;
+  // l_wheel_.pos = 0;
+  // l_wheel_.vel = 0;
 
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Successfully activated!");
+  // r_wheel_.cmd = 0;
+  // r_wheel_.pos = 0;
+  // r_wheel_.vel = 0;
+
+  RCLCPP_INFO(rclcpp::get_logger("kssbot_hardware"), "Successfully activated!");
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
+
+
+
 
 hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Deactivating ...please wait...");
+  //deinitalize
 
-  for (auto i = 0; i < hw_stop_sec_; i++)
-  {
-    rclcpp::sleep_for(std::chrono::seconds(1));
-    RCLCPP_INFO(
-      rclcpp::get_logger("DiffBotSystemHardware"), "%.1f seconds left...", hw_stop_sec_ - i);
-  }
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
-
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Successfully deactivated!");
+  RCLCPP_INFO(rclcpp::get_logger("kssbot_hardware"), "Successfully deactivated!");
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
+
+
+
 hardware_interface::return_type kssbot_diffdrive_rasp4::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
 {
-  double radius = 0.02;  // radius of the wheels
-  double dist_w = 0.1;   // distance between the wheels
-  for (uint i = 0; i < hw_commands_.size(); i++)
-  {
-    // Simulate DiffBot wheels's movement as a first-order system
-    // Update the joint status: this is a revolute joint without any limit.
-    // Simply integrates
-    hw_positions_[i] = hw_positions_[1] + period.seconds() * hw_commands_[i];
-    hw_velocities_[i] = hw_commands_[i];
+  if(!(this->raspmotor_)) return hardware_interface::return_type::ERROR;
 
-    // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-    RCLCPP_INFO(
-      rclcpp::get_logger("DiffBotSystemHardware"),
-      "Got position state %.5f and velocity state %.5f for '%s'!", hw_positions_[i],
-      hw_velocities_[i], info_.joints[i].name.c_str());
-    // END: This part here is for exemplary purposes - Please do not copy to your production code
-  }
+  //due to rasp4 motor has no encoder, we cant get any data
 
-  // Update the free-flyer, i.e. the base notation using the classical
-  // wheel differentiable kinematics
-  double base_dx = 0.5 * radius * (hw_commands_[0] + hw_commands_[1]) * cos(base_theta_);
-  double base_dy = 0.5 * radius * (hw_commands_[0] + hw_commands_[1]) * sin(base_theta_);
-  double base_dtheta = radius * (hw_commands_[0] - hw_commands_[1]) / dist_w;
-  base_x_ += base_dx * period.seconds();
-  base_y_ += base_dy * period.seconds();
-  base_theta_ += base_dtheta * period.seconds();
 
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  RCLCPP_INFO(
-    rclcpp::get_logger("DiffBotSystemHardware"), "Joints successfully read! (%.5f,%.5f,%.5f)",
-    base_x_, base_y_, base_theta_);
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
+  //rasp4motor.readEncoderValues(l_wheel_.enc, r_wheel_.enc);
+
+  // double pos_prev = l_wheel_.pos;
+  // l_wheel_.pos = l_wheel_.calcEncAngle();
+  // l_wheel_.vel = (l_wheel_.pos - pos_prev) / deltaSeconds;
+
+  // pos_prev = r_wheel_.pos;
+  // r_wheel_.pos = r_wheel_.calcEncAngle();
+  // r_wheel_.vel = (r_wheel_.pos - pos_prev) / deltaSeconds;
+
+
+  //---------------------------------------------------------------
+  // double radius = 0.017;  // radius of the wheels 
+  // double dist_w = 0.1;   // distance between the wheels
+
+  // for (uint i = 0; i < hw_commands_.size(); i++)
+  // {
+  //   // Simulate DiffBot wheels's movement as a first-order system
+  //   // Update the joint status: this is a revolute joint without any limit.
+  //   // Simply integrates
+  //   hw_positions_[i] = hw_positions_[1] + period.seconds() * hw_commands_[i];
+  //   hw_velocities_[i] = hw_commands_[i];
+
+  // }
+
+  // // Update the free-flyer, i.e. the base notation using the classical
+  // // wheel differentiable kinematics
+  // double base_dx = 0.5 * radius * (hw_commands_[0] + hw_commands_[1]) * cos(base_theta_);
+  // double base_dy = 0.5 * radius * (hw_commands_[0] + hw_commands_[1]) * sin(base_theta_);
+  // double base_dtheta = radius * (hw_commands_[0] - hw_commands_[1]) / dist_w;
+  // base_x_ += base_dx * period.seconds();
+  // base_y_ += base_dy * period.seconds();
+  // base_theta_ += base_dtheta * period.seconds();
 
   return hardware_interface::return_type::OK;
 }
 
+
+
 hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Writing...");
+  if(!(this->raspmotor_)) return hardware_interface::return_type::ERROR;
 
-  for (auto i = 0u; i < hw_commands_.size(); i++)
-  {
-    // Simulate sending commands to the hardware
-    RCLCPP_INFO(
-      rclcpp::get_logger("DiffBotSystemHardware"), "Got command %.5f for '%s'!", hw_commands_[i],
-      info_.joints[i].name.c_str());
-  }
-  RCLCPP_INFO(rclcpp::get_logger("DiffBotSystemHardware"), "Joints successfully written!");
-  // END: This part here is for exemplary purposes - Please do not copy to your production code
+  this->raspmotor_->LinkRosToRasp(l_wheel_.cmd, r_wheel_.cmd);
 
   return hardware_interface::return_type::OK;
 }

@@ -59,12 +59,6 @@ pluginlib_export_plugin_description_file(hardware_interface
   interface/kssbot_hardware.xml
 )
 
-# INSTALL
-install(
-  TARGETS ${PROJECT_NAME}
-  DESTINATION lib
-)
-
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
 endif()
