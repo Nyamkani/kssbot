@@ -136,12 +136,23 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_activate(
   rclcpp::get_logger("Activating Controller!");
   //rasp4 motor driver initialize
 
-  //main rasp4 motor start
+  //1. main rasp4 motor start
   if(this->raspmotor_ == NULL) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 3, 3);
 
+  //2. init rasp4 motor
   this->raspmotor_->Initialize();
   
+  //3. check rasp4 motor class load 
   if(!(this->raspmotor_)) return hardware_interface::CallbackReturn::ERROR;
+
+  //4. set main loop online
+  this->raspmotor_->is_run_ = true;
+
+  //5. make thread
+
+  std::thread drive_loop_(&kssbot_diffdrive_rasp4::DriveMotor, this);
+
+  drive_loop_.detach();
 
   // set some default values
   // l_wheel_.cmd = 0;
@@ -164,6 +175,10 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   //deinitalize
+
+   //1. main loop is offline
+  this->raspmotor_->is_run_ = false;
+
 
   RCLCPP_INFO(rclcpp::get_logger("kssbot_hardware"), "Successfully deactivated!");
 
@@ -229,6 +244,25 @@ hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
 
   return hardware_interface::return_type::OK;
 }
+
+  KSSBOT_HARDWARE_PUBLIC
+  hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::DriveMotor()
+  {
+    if(!(this->raspmotor_)) return hardware_interface::return_type::ERROR;
+
+    while(1)
+    {
+      if(!(this->raspmotor_->is_run_)) break;
+
+      this->raspmotor_->Drive();
+
+      delayMicroseconds(1/cfg_.loop_rate);
+    }
+
+
+    return hardware_interface::return_type::OK;
+  }
+
 
 }  // namespace kssbot_hardware
 

@@ -112,7 +112,7 @@ class raspmotor
         bool Drive();
 
 
-    //private:
+    private:
         void InitalizePinModeType();
 
         void InitalizePinMode();
@@ -127,15 +127,14 @@ class raspmotor
 
         void MotorDrive();
 
-        void RecordMotorVal();
+        void LeftPostMotorDrive();
+
+        void RightPostMotorDrive();
 
         void PostMotorDrive();
 
         void LeftMotorDriveSaveQueue(pwm_motor_val data);
 
         void RightMotorDriveSaveQueue(pwm_motor_val data);
-
-        void DeleteQueueData();
-
 
 };

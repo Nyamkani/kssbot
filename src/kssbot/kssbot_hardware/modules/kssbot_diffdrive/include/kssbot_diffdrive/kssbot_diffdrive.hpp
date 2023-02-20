@@ -70,8 +70,13 @@ public:
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
+  KSSBOT_HARDWARE_PUBLIC
+  hardware_interface::return_type DriveMotor();
+  
   //main rasp4 motor class
   std::unique_ptr<raspmotor> raspmotor_{nullptr};
+
+  std::thread drive_loop_;
 
   Config cfg_;
 
