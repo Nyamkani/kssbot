@@ -376,7 +376,7 @@ void raspmotor::LinkRosToRasp(int l_motor_cmd, int r_motor_cmd)
 
     LeftMotorControl(l_dir, l_motor_cmd_);
 
-    RightMotorControl(r_dir, l_motor_cmd_);
+    RightMotorControl(r_dir, r_motor_cmd_);
 
     return;
 }
