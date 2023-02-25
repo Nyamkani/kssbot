@@ -510,7 +510,7 @@ void raspmotor::PostMotorDrive()
 
 bool raspmotor::Drive()
 {
-    printf("Drive Start\n");
+    //printf("Drive Start\n");
 
     MotorDrive();
 
