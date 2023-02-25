@@ -291,7 +291,7 @@ void raspmotor::RightMotorControl(int direction, int speed)
             tickcount = speedgap / (this->pwm_acc_);
             leftover = speedgap % (this->pwm_acc_);
 
-            printf("speedgap : %d, tickcnt : %d, leftover : %d, acc : %d, dec : %d\n", speedgap, tickcount, leftover, this->pwm_acc_, this->pwm_acc_);
+            //printf("speedgap : %d, tickcnt : %d, leftover : %d, acc : %d, dec : %d\n", speedgap, tickcount, leftover, this->pwm_acc_, this->pwm_acc_);
 
             for(int i = 1; i<= tickcount; i++) 
             {
@@ -359,6 +359,28 @@ void raspmotor::RightMotorDriveSaveQueue(pwm_motor_val data)
 }
 
 
+void raspmotor::LinkRosToRasp(int l_motor_cmd, int r_motor_cmd)
+{
+
+    int l_motor_cmd_ = l_motor_cmd * motor_vel;
+    int l_dir = forward;
+    int r_motor_cmd_ = r_motor_cmd * motor_vel;
+    int r_dir= forward;
+
+    if(l_motor_cmd_< 0) l_dir = backward;
+    if(r_motor_cmd_< 0) r_dir = backward;
+
+    pwm_left_motor_queue.clear();
+
+    pwm_right_motor_queue.clear();
+
+    LeftMotorControl(l_dir, l_motor_cmd_);
+
+    RightMotorControl(r_dir, r_motor_cmd_);
+
+    return;
+}
+
 
 void raspmotor::StopMotor()
 {
@@ -382,6 +404,8 @@ void raspmotor::StopMotor()
 
 void raspmotor::LeftMotorDrive()
 {
+    if(this->pwm_left_motor_queue.empty()) return;
+       
     const pwm_motor_val temp_left_motor_val = pwm_left_motor_queue.front();
 
     if(temp_left_motor_val.pwm_motor_dir_ == backward)
@@ -407,6 +431,9 @@ void raspmotor::LeftMotorDrive()
 
 void raspmotor::RightMotorDrive()
 {
+    if(this->pwm_right_motor_queue.empty()) return;
+
+
     const pwm_motor_val temp_right_motor_val = pwm_right_motor_queue.front();
 
     if(temp_right_motor_val.pwm_motor_dir_ == backward)
@@ -432,6 +459,7 @@ void raspmotor::RightMotorDrive()
 
 void raspmotor::MotorDrive()
 {
+
     LeftMotorDrive();
 
     RightMotorDrive();
@@ -440,30 +468,39 @@ void raspmotor::MotorDrive()
 }
 
 
-void raspmotor::RecordMotorVal()
+void raspmotor::LeftPostMotorDrive()
 {
-    this->read_left_motor_val_= this->pwm_left_motor_queue.front();
+     if(!(this->pwm_left_motor_queue.empty()))
+     {
+        //1. record motor values
+        this->read_left_motor_val_= this->pwm_left_motor_queue.front();
 
-    this->read_right_motor_val_ = this->pwm_right_motor_queue.front();
+        //2. delete queues
+        this->pwm_left_motor_queue.erase(this->pwm_left_motor_queue.begin());
+     }
 
-    return;
+     return;
 }
 
-void raspmotor::DeleteQueueData()
+void raspmotor::RightPostMotorDrive()
 {
-    if(!(this->pwm_left_motor_queue.empty())) this->pwm_left_motor_queue.erase(this->pwm_left_motor_queue.begin());
-  
-    if(!(this->pwm_right_motor_queue.empty())) this->pwm_right_motor_queue.erase(this->pwm_right_motor_queue.begin());
+    if(!(this->pwm_right_motor_queue.empty()))
+    {
+        //1. record motor values
+        this->read_right_motor_val_ = this->pwm_right_motor_queue.front();
 
+        //2. delete queues
+        this->pwm_right_motor_queue.erase(this->pwm_right_motor_queue.begin());
+    }
     return;
 }
 
 void raspmotor::PostMotorDrive()
 {
 
-    RecordMotorVal();
+    LeftPostMotorDrive();
 
-    DeleteQueueData();
+    RightPostMotorDrive();
 
     //printf("left speed : %d, Right speed : %d\n", read_left_motor_val_.pwm_motor_speed_,read_right_motor_val_.pwm_motor_speed_ );
 
@@ -473,13 +510,11 @@ void raspmotor::PostMotorDrive()
 
 bool raspmotor::Drive()
 {
-   // printf("Drive Start\n");
+    //printf("Drive Start\n");
 
     MotorDrive();
 
     PostMotorDrive();
-
-    if((this->pwm_left_motor_queue.empty()) && (this->pwm_right_motor_queue.empty())) return false;
 
    // printf("Drive end\n");
 

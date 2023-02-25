@@ -23,6 +23,7 @@
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
+
 #include "rclcpp/clock.hpp"
 #include "rclcpp/duration.hpp"
 #include "rclcpp/macros.hpp"
@@ -32,7 +33,8 @@
 
 #include "kssbot_diffdrive/visibility_control.h"
 #include "raspmotorctrl.hpp"
-
+#include "config.hpp"
+#include "wheel.hpp"
 
 namespace kssbot_hardware
 {
@@ -68,19 +70,19 @@ public:
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
-  // Parameters for the DiffBot simulation
-  double hw_start_sec_;
-  double hw_stop_sec_;
-
+  KSSBOT_HARDWARE_PUBLIC
+  hardware_interface::return_type DriveMotor();
+  
+  //main rasp4 motor class
   std::unique_ptr<raspmotor> raspmotor_{nullptr};
 
-  // Store the command for the simulated robot
-  std::vector<double> hw_commands_;
-  std::vector<double> hw_positions_;
-  std::vector<double> hw_velocities_;
+  std::thread drive_loop_;
 
-  // Store the wheeled robot position
-  double base_x_, base_y_, base_theta_;
+  Config cfg_;
+
+  Wheel l_wheel_;
+  Wheel r_wheel_;
+
 };
 
 }  // namespace kssbot_hardware

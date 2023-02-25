@@ -28,6 +28,7 @@ find_library(WIRINGPI_LIBRARIES wiringPi)
 add_library(${PROJECT_NAME} SHARED
   src/kssbot_diffdrive.cpp 
   src/raspmotorctrl.cpp 
+  src/wheel.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} ${WIRINGPI_LIBRARIES})

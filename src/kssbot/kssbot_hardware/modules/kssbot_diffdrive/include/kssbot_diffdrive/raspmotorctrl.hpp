@@ -85,6 +85,7 @@ class raspmotor
         int error_code_;
         int pwm_acc_ = 0;
         int pwm_dec_ = 0;
+        int motor_vel = 50;
 
         pwm_motor_val read_left_motor_val_= {0,0};
         pwm_motor_val read_right_motor_val_ = {0,0};
@@ -104,11 +105,14 @@ class raspmotor
 
         void Initialize();
 
+        void LinkRosToRasp(int l_motor_cmd, int r_motor_cmd);
+
         void StopMotor();
 
         bool Drive();
 
-    //private:
+
+    private:
         void InitalizePinModeType();
 
         void InitalizePinMode();
@@ -123,15 +127,14 @@ class raspmotor
 
         void MotorDrive();
 
-        void RecordMotorVal();
+        void LeftPostMotorDrive();
+
+        void RightPostMotorDrive();
 
         void PostMotorDrive();
 
         void LeftMotorDriveSaveQueue(pwm_motor_val data);
 
         void RightMotorDriveSaveQueue(pwm_motor_val data);
-
-        void DeleteQueueData();
-
 
 };

@@ -1,0 +1,32 @@
+#include "kssbot_diffdrive/wheel.hpp"
+#include <cmath>
+
+
+// Wheel::Wheel(const std::string &wheel_name, int counts_per_rev)
+// {
+//   setup(wheel_name, counts_per_rev);
+// }
+
+
+// void Wheel::setup(const std::string &wheel_name, int counts_per_rev)
+// {
+//   name = wheel_name;
+//   rads_per_count = (2*M_PI)/counts_per_rev;
+// }
+
+// double Wheel::calcEncAngle()
+// {
+//   return enc * rads_per_count;
+// }
+
+Wheel::Wheel(const std::string &wheel_name)
+{
+  setup(wheel_name);
+}
+
+
+void Wheel::setup(const std::string &wheel_name)
+{
+  name = wheel_name;
+}
+
