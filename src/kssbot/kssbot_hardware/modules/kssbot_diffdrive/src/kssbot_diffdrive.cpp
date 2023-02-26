@@ -256,7 +256,7 @@ hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
 
       this->raspmotor_->Drive();
 
-      delayMicroseconds(1/cfg_.loop_rate);
+      usleep(10000);
     }
 
 

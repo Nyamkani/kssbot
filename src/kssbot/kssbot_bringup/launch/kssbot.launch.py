@@ -118,7 +118,7 @@ def generate_launch_description():
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
+        #delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,        
         IncludeLaunchDescription(PythonLaunchDescriptionSource([joystick_launch_file_dir, '/joystick.launch.py'])),
     ])
