@@ -87,8 +87,8 @@ class raspmotor
         int pwm_dec_ = 0;
         int motor_vel = 50;
 
-        pwm_motor_val write_left_motor_val_= {0,0};
-        pwm_motor_val write_right_motor_val_ = {0,0};
+        int write_left_motor_val_ = 0;
+        int write_right_motor_val_ = 0;
 
         pwm_motor_val read_left_motor_val_= {0,0};
         pwm_motor_val read_right_motor_val_ = {0,0};
@@ -127,8 +127,6 @@ class raspmotor
         void LeftMotorDrive();
 
         void RightMotorDrive();
-
-        void PreMotorDrive();
 
         void MotorDrive();
 

@@ -364,7 +364,13 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     int l_motor_cmd_ = l_motor_cmd * this->motor_vel;
     int l_dir = forward;
     int r_motor_cmd_ = r_motor_cmd * this->motor_vel;
-    int r_dir= forward;
+    int r_dir = forward;
+
+    if(this->write_left_motor_val_ == l_motor_cmd_ &&
+        this->write_right_motor_val_ == r_motor_cmd_) return; 
+
+    this->write_left_motor_val_  = l_motor_cmd_;
+    this->write_right_motor_val_ = r_motor_cmd_;
 
     if(l_motor_cmd_< 0) l_dir = backward;
     if(r_motor_cmd_< 0) r_dir = backward;
@@ -372,58 +378,16 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     l_motor_cmd_ = abs(l_motor_cmd_);
     r_motor_cmd_ = abs(r_motor_cmd_);
 
-
-    if(this->write_left_motor_val_.pwm_motor_speed_ == l_motor_cmd_ &&
-        this->write_right_motor_val_.pwm_motor_speed_ == r_motor_cmd_ &&
-        this->write_left_motor_val_.pwm_motor_dir_ == l_dir &&
-        this->write_right_motor_val_.pwm_motor_dir_ == r_dir ) return;
-
-    this->write_left_motor_val_.pwm_motor_speed_ = l_motor_cmd_;
-    this->write_right_motor_val_.pwm_motor_speed_ = r_motor_cmd_;
-    this->write_left_motor_val_.pwm_motor_dir_ = l_dir;
-    this->write_right_motor_val_.pwm_motor_dir_ = r_dir;
-
-
-    
-    return;
-}
-
-void raspmotor::PreMotorDrive()
-{
-    const pwm_motor_val temp_left_motor_data = this->write_left_motor_val_;
-    const pwm_motor_val temp_right_motor_data = this->write_right_motor_val_;
-
     pwm_left_motor_queue.clear();
 
     pwm_right_motor_queue.clear();
 
-    LeftMotorControl(temp_left_motor_data.pwm_motor_dir_,temp_left_motor_data.pwm_motor_speed_);
+    LeftMotorControl(l_dir, l_motor_cmd_);
 
-    RightMotorControl(temp_right_motor_data.pwm_motor_dir_, temp_right_motor_data.pwm_motor_speed_);
+    RightMotorControl(r_dir, r_motor_cmd_);
 
     return;
 }
-// void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
-// {
-
-//     int l_motor_cmd_ = l_motor_cmd * motor_vel;
-//     int l_dir = forward;
-//     int r_motor_cmd_ = r_motor_cmd * motor_vel;
-//     int r_dir= forward;
-
-//     if(l_motor_cmd_< 0) l_dir = backward;
-//     if(r_motor_cmd_< 0) r_dir = backward;
-
-//     pwm_left_motor_queue.clear();
-
-//     pwm_right_motor_queue.clear();
-
-//     LeftMotorControl(l_dir, abs(l_motor_cmd_));
-
-//     RightMotorControl(r_dir, abs(r_motor_cmd_));
-    
-//     return;
-// }
 
 void raspmotor::StopMotor()
 {
@@ -441,8 +405,6 @@ void raspmotor::StopMotor()
 
     return;
 }
-
-
 
 
 void raspmotor::LeftMotorDrive()
@@ -554,8 +516,6 @@ void raspmotor::PostMotorDrive()
 bool raspmotor::Drive()
 {
     //printf("Drive Start\n");
-
-    PreMotorDrive();
 
     MotorDrive();
 
