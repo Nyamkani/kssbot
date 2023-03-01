@@ -105,7 +105,7 @@ class raspmotor
 
         void Initialize();
 
-        void LinkRosToRasp(int l_motor_cmd, int r_motor_cmd);
+        void LinkRosToRasp(double l_motor_cmd, double r_motor_cmd);
 
         void StopMotor();
 
