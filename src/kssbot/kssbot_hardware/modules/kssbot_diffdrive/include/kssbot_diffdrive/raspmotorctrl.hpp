@@ -128,6 +128,8 @@ class raspmotor
 
         void RightMotorDrive();
 
+        void PreMotorDrive();
+
         void MotorDrive();
 
         void LeftPostMotorDrive();

@@ -114,6 +114,234 @@ void raspmotor::Initialize()
      return;
 }
 
+// void raspmotor::LeftMotorControl(int direction, int speed)
+// {
+//     int direction_ = direction;
+//     int speed_ = speed;
+//     int tickcount = 0;
+//     int leftover = 0;
+//     int speedgap = 0;
+
+//     pwm_motor_val current_left_motor_status = read_left_motor_val_;
+//     pwm_motor_val temp_buffer_;
+    
+//     //0. check current direction
+//     if(current_left_motor_status.pwm_motor_dir_ != direction_)
+//     {
+//         /*decreasee vel by deccel*/
+//         tickcount = (current_left_motor_status.pwm_motor_speed_) / (this->pwm_dec_);
+//         leftover = (current_left_motor_status.pwm_motor_speed_) % (this->pwm_dec_);
+
+//         for(int i = 1; i<= tickcount; i++) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = (current_left_motor_status.pwm_motor_dir_);
+//             temp_buffer_.pwm_motor_speed_ = (current_left_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_)));
+
+//             LeftMotorDriveSaveQueue(temp_buffer_);
+//         }
+
+//         if(leftover != 0) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = (current_left_motor_status.pwm_motor_dir_);
+//             temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+
+//             LeftMotorDriveSaveQueue(temp_buffer_);
+//         }
+
+//         /*increase vel by accel*/
+//         tickcount = speed_ / (this->pwm_acc_);
+//         leftover = speed_ % (this->pwm_acc_);
+
+//         for(int i = 1; i<= tickcount; i++) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = direction_;
+//             temp_buffer_.pwm_motor_speed_ = (i * (this->pwm_acc_));
+
+//             LeftMotorDriveSaveQueue(temp_buffer_);
+//         }
+
+//         if(leftover != 0) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = direction_;
+//             temp_buffer_.pwm_motor_speed_  = (tickcount * (this->pwm_acc_)) + leftover;
+
+//             LeftMotorDriveSaveQueue(temp_buffer_);
+//         }
+//     } 
+//     else 
+//     {
+//         //1. check current speed
+//         speedgap = this->read_left_motor_val_.pwm_motor_speed_ - speed_;
+
+//         if(speedgap < 0)
+//         {
+//             speedgap = abs(speedgap);
+
+//             tickcount = speedgap / (this->pwm_acc_);
+//             leftover = speedgap % (this->pwm_acc_);
+
+//             for(int i = 1; i<= tickcount; i++) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_ = current_left_motor_status.pwm_motor_speed_ + (i * (this->pwm_acc_));
+
+//                 LeftMotorDriveSaveQueue(temp_buffer_);
+//             }
+
+//             if(leftover != 0) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ + (tickcount * (this->pwm_dec_)) + leftover);
+
+//                 LeftMotorDriveSaveQueue(temp_buffer_);
+//             }
+//         }
+//         else if(speedgap > 0)
+//         {
+//             speedgap = abs(speedgap);
+
+//             /*decreasee vel by accels*/
+//             tickcount = speedgap / (this->pwm_dec_);
+//             leftover = speedgap % (this->pwm_dec_);
+
+//             for(int i = 1; i<= tickcount; i++) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_ = current_left_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_));
+
+//                LeftMotorDriveSaveQueue(temp_buffer_);
+//             }
+
+//             if(leftover != 0) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+
+//                 LeftMotorDriveSaveQueue(temp_buffer_);
+//             }
+//         }
+//     }
+
+//     return;
+// }
+
+// void raspmotor::RightMotorControl(int direction, int speed)
+// {
+//    int direction_ = direction;
+//     int speed_ = speed;
+//     int tickcount = 0;
+//     int leftover = 0;
+//     int speedgap = 0;
+
+//     pwm_motor_val current_right_motor_status = this->read_right_motor_val_;
+//     pwm_motor_val temp_buffer_;
+
+//     //0. check current direction
+//     if(current_right_motor_status.pwm_motor_dir_ != direction_)
+//     {
+//         /*decreasee vel by deccel*/
+//         tickcount = (current_right_motor_status.pwm_motor_speed_) / (this->pwm_dec_);
+//         leftover = (current_right_motor_status.pwm_motor_speed_) % (this->pwm_dec_);
+
+//         for(int i = 1; i<= tickcount; i++) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = (current_right_motor_status.pwm_motor_dir_);
+//             temp_buffer_.pwm_motor_speed_ = (current_right_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_)));
+
+//             RightMotorDriveSaveQueue(temp_buffer_);
+//         }
+
+//         if(leftover != 0) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = (current_right_motor_status.pwm_motor_dir_);
+//             temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+
+//             RightMotorDriveSaveQueue(temp_buffer_);
+//         }
+
+//         /*increase vel by accel*/
+//         tickcount = speed_ / (this->pwm_acc_);
+//         leftover = speed_ % (this->pwm_acc_);
+
+//         for(int i = 1; i<= tickcount; i++) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = direction_;
+//             temp_buffer_.pwm_motor_speed_ = (i * (this->pwm_acc_));
+
+//             RightMotorDriveSaveQueue(temp_buffer_);
+//         }
+
+//         if(leftover != 0) 
+//         {
+//             temp_buffer_.pwm_motor_dir_ = direction_;
+//             temp_buffer_.pwm_motor_speed_  = (tickcount * (this->pwm_acc_)) + leftover;
+
+//             RightMotorDriveSaveQueue(temp_buffer_);
+//         }
+//     } 
+//     else 
+//     {
+//         //1. check current speed
+//         speedgap = current_right_motor_status.pwm_motor_speed_ - speed_;
+
+//         if(speedgap < 0)
+//         {
+//             speedgap = abs(speedgap);
+
+//             tickcount = speedgap / (this->pwm_acc_);
+//             leftover = speedgap % (this->pwm_acc_);
+
+//             //printf("speedgap : %d, tickcnt : %d, leftover : %d, acc : %d, dec : %d\n", speedgap, tickcount, leftover, this->pwm_acc_, this->pwm_acc_);
+
+//             for(int i = 1; i<= tickcount; i++) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_ = current_right_motor_status.pwm_motor_speed_ + (i * (this->pwm_acc_));
+
+//                 //printf("buffer dir : %d, buffer speed : %d \n",temp_buffer_.pwm_motor_dir_, temp_buffer_.pwm_motor_speed_);
+//                 RightMotorDriveSaveQueue(temp_buffer_);
+
+
+//             }
+
+//             if(leftover != 0) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ + (tickcount * (this->pwm_dec_)) + leftover);
+
+//                 RightMotorDriveSaveQueue(temp_buffer_);
+//             }
+//         }
+//         else if(speedgap > 0)
+//         {
+//             speedgap = abs(speedgap);
+
+//             /*decreasee vel by accels*/
+//             tickcount = speedgap / (this->pwm_dec_);
+//             leftover = speedgap % (this->pwm_dec_);
+
+//             for(int i = 1; i<= tickcount; i++) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_ = current_right_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_));
+
+//                 RightMotorDriveSaveQueue(temp_buffer_);
+//             }
+
+//             if(leftover != 0) 
+//             {
+//                 temp_buffer_.pwm_motor_dir_ = direction_;
+//                 temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+
+//                 RightMotorDriveSaveQueue(temp_buffer_);
+//             }
+//         }
+//     }
+
+//     return;
+// }
+
+
 void raspmotor::LeftMotorControl(int direction, int speed)
 {
     int direction_ = direction;
@@ -132,41 +360,34 @@ void raspmotor::LeftMotorControl(int direction, int speed)
         tickcount = (current_left_motor_status.pwm_motor_speed_) / (this->pwm_dec_);
         leftover = (current_left_motor_status.pwm_motor_speed_) % (this->pwm_dec_);
 
-        for(int i = 1; i<= tickcount; i++) 
+        if(tickcount != 0)
         {
             temp_buffer_.pwm_motor_dir_ = (current_left_motor_status.pwm_motor_dir_);
-            temp_buffer_.pwm_motor_speed_ = (current_left_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_)));
-
+            temp_buffer_.pwm_motor_speed_ = (current_left_motor_status.pwm_motor_speed_ - ((this->pwm_dec_)));
+                                                                
             LeftMotorDriveSaveQueue(temp_buffer_);
+
+            return;
         }
 
         if(leftover != 0) 
         {
             temp_buffer_.pwm_motor_dir_ = (current_left_motor_status.pwm_motor_dir_);
-            temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+            temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ - leftover);
 
             LeftMotorDriveSaveQueue(temp_buffer_);
+
+            return;
         }
 
-        /*increase vel by accel*/
-        tickcount = speed_ / (this->pwm_acc_);
-        leftover = speed_ % (this->pwm_acc_);
+        //change motor direction
+        temp_buffer_.pwm_motor_dir_ = direction_;
+        temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_);
 
-        for(int i = 1; i<= tickcount; i++) 
-        {
-            temp_buffer_.pwm_motor_dir_ = direction_;
-            temp_buffer_.pwm_motor_speed_ = (i * (this->pwm_acc_));
+        LeftMotorDriveSaveQueue(temp_buffer_);
 
-            LeftMotorDriveSaveQueue(temp_buffer_);
-        }
-
-        if(leftover != 0) 
-        {
-            temp_buffer_.pwm_motor_dir_ = direction_;
-            temp_buffer_.pwm_motor_speed_  = (tickcount * (this->pwm_acc_)) + leftover;
-
-            LeftMotorDriveSaveQueue(temp_buffer_);
-        }
+        return;
+        
     } 
     else 
     {
@@ -180,20 +401,24 @@ void raspmotor::LeftMotorControl(int direction, int speed)
             tickcount = speedgap / (this->pwm_acc_);
             leftover = speedgap % (this->pwm_acc_);
 
-            for(int i = 1; i<= tickcount; i++) 
+            if(tickcount != 0)
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_ = current_left_motor_status.pwm_motor_speed_ + (i * (this->pwm_acc_));
+                temp_buffer_.pwm_motor_speed_ = current_left_motor_status.pwm_motor_speed_ + (this->pwm_acc_);
 
                 LeftMotorDriveSaveQueue(temp_buffer_);
+
+                return;
             }
 
             if(leftover != 0) 
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ + (tickcount * (this->pwm_dec_)) + leftover);
+                temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_+ leftover);
 
                 LeftMotorDriveSaveQueue(temp_buffer_);
+
+                return;
             }
         }
         else if(speedgap > 0)
@@ -204,20 +429,24 @@ void raspmotor::LeftMotorControl(int direction, int speed)
             tickcount = speedgap / (this->pwm_dec_);
             leftover = speedgap % (this->pwm_dec_);
 
-            for(int i = 1; i<= tickcount; i++) 
+            if(tickcount != 0)
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_ = current_left_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_));
+                temp_buffer_.pwm_motor_speed_ = (current_left_motor_status.pwm_motor_speed_ - (this->pwm_dec_));
 
-               LeftMotorDriveSaveQueue(temp_buffer_);
+                LeftMotorDriveSaveQueue(temp_buffer_);
+
+               return;
             }
 
             if(leftover != 0) 
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+                temp_buffer_.pwm_motor_speed_  = (current_left_motor_status.pwm_motor_speed_ - leftover);
 
                 LeftMotorDriveSaveQueue(temp_buffer_);
+
+                return;
             }
         }
     }
@@ -243,41 +472,33 @@ void raspmotor::RightMotorControl(int direction, int speed)
         tickcount = (current_right_motor_status.pwm_motor_speed_) / (this->pwm_dec_);
         leftover = (current_right_motor_status.pwm_motor_speed_) % (this->pwm_dec_);
 
-        for(int i = 1; i<= tickcount; i++) 
+        if(tickcount != 0)
         {
             temp_buffer_.pwm_motor_dir_ = (current_right_motor_status.pwm_motor_dir_);
-            temp_buffer_.pwm_motor_speed_ = (current_right_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_)));
+            temp_buffer_.pwm_motor_speed_ = (current_right_motor_status.pwm_motor_speed_ - (this->pwm_dec_));
 
             RightMotorDriveSaveQueue(temp_buffer_);
+
+            return;
         }
 
         if(leftover != 0) 
         {
             temp_buffer_.pwm_motor_dir_ = (current_right_motor_status.pwm_motor_dir_);
-            temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+            temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ - leftover);
 
             RightMotorDriveSaveQueue(temp_buffer_);
+
+            return;
         }
 
-        /*increase vel by accel*/
-        tickcount = speed_ / (this->pwm_acc_);
-        leftover = speed_ % (this->pwm_acc_);
+       //change motor direction
+        temp_buffer_.pwm_motor_dir_ = direction_;
+        temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_);
 
-        for(int i = 1; i<= tickcount; i++) 
-        {
-            temp_buffer_.pwm_motor_dir_ = direction_;
-            temp_buffer_.pwm_motor_speed_ = (i * (this->pwm_acc_));
+        RightMotorDriveSaveQueue(temp_buffer_);
 
-            RightMotorDriveSaveQueue(temp_buffer_);
-        }
-
-        if(leftover != 0) 
-        {
-            temp_buffer_.pwm_motor_dir_ = direction_;
-            temp_buffer_.pwm_motor_speed_  = (tickcount * (this->pwm_acc_)) + leftover;
-
-            RightMotorDriveSaveQueue(temp_buffer_);
-        }
+        return;
     } 
     else 
     {
@@ -291,25 +512,24 @@ void raspmotor::RightMotorControl(int direction, int speed)
             tickcount = speedgap / (this->pwm_acc_);
             leftover = speedgap % (this->pwm_acc_);
 
-            //printf("speedgap : %d, tickcnt : %d, leftover : %d, acc : %d, dec : %d\n", speedgap, tickcount, leftover, this->pwm_acc_, this->pwm_acc_);
-
-            for(int i = 1; i<= tickcount; i++) 
+            if(tickcount != 0)
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_ = current_right_motor_status.pwm_motor_speed_ + (i * (this->pwm_acc_));
+                temp_buffer_.pwm_motor_speed_ = current_right_motor_status.pwm_motor_speed_ + (this->pwm_acc_);
 
-                //printf("buffer dir : %d, buffer speed : %d \n",temp_buffer_.pwm_motor_dir_, temp_buffer_.pwm_motor_speed_);
                 RightMotorDriveSaveQueue(temp_buffer_);
 
-
+                return;
             }
 
             if(leftover != 0) 
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ + (tickcount * (this->pwm_dec_)) + leftover);
+                temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ + leftover);
 
                 RightMotorDriveSaveQueue(temp_buffer_);
+
+                return;
             }
         }
         else if(speedgap > 0)
@@ -320,26 +540,35 @@ void raspmotor::RightMotorControl(int direction, int speed)
             tickcount = speedgap / (this->pwm_dec_);
             leftover = speedgap % (this->pwm_dec_);
 
-            for(int i = 1; i<= tickcount; i++) 
+            if(tickcount != 0)
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_ = current_right_motor_status.pwm_motor_speed_ - (i * (this->pwm_dec_));
+                temp_buffer_.pwm_motor_speed_ = current_right_motor_status.pwm_motor_speed_ - (this->pwm_dec_);
 
                 RightMotorDriveSaveQueue(temp_buffer_);
+
+                return;
             }
 
             if(leftover != 0) 
             {
                 temp_buffer_.pwm_motor_dir_ = direction_;
-                temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ - (tickcount * (this->pwm_dec_)) - leftover);
+                temp_buffer_.pwm_motor_speed_  = (current_right_motor_status.pwm_motor_speed_ - leftover);
 
                 RightMotorDriveSaveQueue(temp_buffer_);
+
+                return;
             }
         }
     }
 
     return;
 }
+
+
+
+
+
 
 
 void raspmotor::LeftMotorDriveSaveQueue(pwm_motor_val data)
@@ -361,30 +590,15 @@ void raspmotor::RightMotorDriveSaveQueue(pwm_motor_val data)
 
 void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
 {
-    int l_motor_cmd_ = l_motor_cmd * this->motor_vel;
-    int l_dir = forward;
-    int r_motor_cmd_ = r_motor_cmd * this->motor_vel;
-    int r_dir = forward;
+    const int l_motor_cmd_ = l_motor_cmd * this->motor_vel;
+    const int r_motor_cmd_ = r_motor_cmd * this->motor_vel;
 
+    //1. check upcoming command. If command is same with present. ignore upcoming command
     if(this->write_left_motor_val_ == l_motor_cmd_ &&
         this->write_right_motor_val_ == r_motor_cmd_) return; 
 
     this->write_left_motor_val_  = l_motor_cmd_;
     this->write_right_motor_val_ = r_motor_cmd_;
-
-    if(l_motor_cmd_< 0) l_dir = backward;
-    if(r_motor_cmd_< 0) r_dir = backward;
-
-    l_motor_cmd_ = abs(l_motor_cmd_);
-    r_motor_cmd_ = abs(r_motor_cmd_);
-
-    pwm_left_motor_queue.clear();
-
-    pwm_right_motor_queue.clear();
-
-    LeftMotorControl(l_dir, l_motor_cmd_);
-
-    RightMotorControl(r_dir, r_motor_cmd_);
 
     return;
 }
@@ -405,6 +619,34 @@ void raspmotor::StopMotor()
 
     return;
 }
+
+void raspmotor::PreMotorDrive()
+{
+    int l_motor_cmd_ = this->write_left_motor_val_;
+    int l_dir = forward;
+    int r_motor_cmd_ = this->write_right_motor_val_;
+    int r_dir = forward;
+
+    if(l_motor_cmd_< 0) l_dir = backward;
+    if(r_motor_cmd_< 0) r_dir = backward;
+
+    l_motor_cmd_ = abs(l_motor_cmd_);
+    r_motor_cmd_ = abs(r_motor_cmd_);
+
+    pwm_left_motor_queue.clear();
+
+    pwm_right_motor_queue.clear();
+
+    LeftMotorControl(l_dir, l_motor_cmd_);
+
+    RightMotorControl(r_dir, r_motor_cmd_);
+
+    return;
+}
+
+
+
+
 
 
 void raspmotor::LeftMotorDrive()
@@ -516,6 +758,8 @@ void raspmotor::PostMotorDrive()
 bool raspmotor::Drive()
 {
     //printf("Drive Start\n");
+
+    PreMotorDrive();
 
     MotorDrive();
 
