@@ -85,7 +85,7 @@ class raspmotor
         int error_code_;
         int pwm_acc_ = 0;
         int pwm_dec_ = 0;
-        int motor_vel = 30;
+        int motor_vel = 20;
 
         int write_left_motor_val_ = 0;
         int write_right_motor_val_ = 0;
