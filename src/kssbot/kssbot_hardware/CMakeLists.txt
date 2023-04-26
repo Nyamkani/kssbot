@@ -20,6 +20,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 
 # add moudules
 add_subdirectory(modules/kssbot_diffdrive)
+#add_subdirectory(modules/kssbot_led)
 #add ros2_control library here
 
 

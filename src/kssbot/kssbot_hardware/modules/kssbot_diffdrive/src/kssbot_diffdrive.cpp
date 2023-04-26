@@ -12,18 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #include "kssbot_diffdrive/kssbot_diffdrive.hpp"
-
-#include <chrono>
-#include <cmath>
-#include <limits>
-#include <memory>
-#include <vector>
-
-#include "hardware_interface/types/hardware_interface_type_values.hpp"
-#include "rclcpp/rclcpp.hpp"
-
-
 
 namespace kssbot_hardware
 {
@@ -149,7 +139,6 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_activate(
   this->raspmotor_->is_run_ = true;
 
   //5. make thread
-
   std::thread drive_loop_(&kssbot_diffdrive_rasp4::DriveMotor, this);
 
   drive_loop_.detach();

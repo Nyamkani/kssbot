@@ -33,7 +33,7 @@
  +-----+-----+---------+------+---+---Pi 4B--+---+------+---------+-----+-----+
 */
 
-enum pin_mode
+enum motor_pin_mode
 {
     physical = 0,
     wPi = 1,
@@ -41,7 +41,7 @@ enum pin_mode
     sys = 3,
 };
 
-enum raspberrypi_4_pin_number
+enum raspberrypi_4_motor_pin_number
 {
     Motor_A_EN = 4,
     Motor_B_EN = 17,

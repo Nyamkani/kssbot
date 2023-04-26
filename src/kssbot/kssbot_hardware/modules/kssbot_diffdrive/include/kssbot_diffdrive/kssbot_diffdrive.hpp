@@ -15,75 +15,84 @@
 #ifndef KSSBOT_HARDWARE__DIFFBOT_SYSTEM_HPP_
 #define KSSBOT_HARDWARE__DIFFBOT_SYSTEM_HPP_
 
+#include <chrono>
+#include <cmath>
+#include <limits>
 #include <memory>
-#include <string>
 #include <vector>
+#include <string>
 
+/*ros2 control Header Files*/
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 
+/*Standard ros Header Files*/
+#include "rclcpp/rclcpp.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/duration.hpp"
 #include "rclcpp/macros.hpp"
 #include "rclcpp/time.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
+#include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
+/*Custom Header Files*/
 #include "kssbot_diffdrive/visibility_control.h"
+#include "kssbot_diffdrive/kssbot_diffdrive.hpp"
 #include "raspmotorctrl.hpp"
 #include "config.hpp"
 #include "wheel.hpp"
 
 namespace kssbot_hardware
 {
-class kssbot_diffdrive_rasp4 : public hardware_interface::SystemInterface
-{
-public:
-  RCLCPP_SHARED_PTR_DEFINITIONS(kssbot_diffdrive_rasp4);
+  class kssbot_diffdrive_rasp4 : public hardware_interface::SystemInterface
+  {
+    public:
+      RCLCPP_SHARED_PTR_DEFINITIONS(kssbot_diffdrive_rasp4);
 
-  KSSBOT_HARDWARE_PUBLIC
-  hardware_interface::CallbackReturn on_init(
-    const hardware_interface::HardwareInfo & info) override;
+      KSSBOT_HARDWARE_PUBLIC
+      hardware_interface::CallbackReturn on_init(
+        const hardware_interface::HardwareInfo & info) override;
 
-  KSSBOT_HARDWARE_PUBLIC
-  std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+      KSSBOT_HARDWARE_PUBLIC
+      std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
 
-  KSSBOT_HARDWARE_PUBLIC
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+      KSSBOT_HARDWARE_PUBLIC
+      std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
 
-  KSSBOT_HARDWARE_PUBLIC
-  hardware_interface::CallbackReturn on_activate(
-    const rclcpp_lifecycle::State & previous_state) override;
+      KSSBOT_HARDWARE_PUBLIC
+      hardware_interface::CallbackReturn on_activate(
+        const rclcpp_lifecycle::State & previous_state) override;
 
-  KSSBOT_HARDWARE_PUBLIC
-  hardware_interface::CallbackReturn on_deactivate(
-    const rclcpp_lifecycle::State & previous_state) override;
+      KSSBOT_HARDWARE_PUBLIC
+      hardware_interface::CallbackReturn on_deactivate(
+        const rclcpp_lifecycle::State & previous_state) override;
 
-  KSSBOT_HARDWARE_PUBLIC
-  hardware_interface::return_type read(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+      KSSBOT_HARDWARE_PUBLIC
+      hardware_interface::return_type read(
+        const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
-  KSSBOT_HARDWARE_PUBLIC
-  hardware_interface::return_type write(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+      KSSBOT_HARDWARE_PUBLIC
+      hardware_interface::return_type write(
+        const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
-private:
-  KSSBOT_HARDWARE_PUBLIC
-  hardware_interface::return_type DriveMotor();
-  
-  //main rasp4 motor class
-  std::unique_ptr<raspmotor> raspmotor_{nullptr};
+    private:
+      KSSBOT_HARDWARE_PUBLIC
+      hardware_interface::return_type DriveMotor();
 
-  std::thread drive_loop_;
+      //main rasp4 motor class
+      std::unique_ptr<raspmotor> raspmotor_{nullptr};
 
-  Config cfg_;
+      std::thread drive_loop_;
 
-  Wheel l_wheel_;
-  Wheel r_wheel_;
+      Config cfg_;
 
-};
+      Wheel l_wheel_;
+      Wheel r_wheel_;
+
+  };
 
 }  // namespace kssbot_hardware
 
