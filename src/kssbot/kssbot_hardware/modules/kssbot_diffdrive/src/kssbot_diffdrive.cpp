@@ -92,7 +92,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_init(
   //rasp4 motor driver initialize
 
   //1. main rasp4 motor start
-  if(!(this->raspmotor_)) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 30, 30);
+  if(!(this->raspmotor_)) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 20, 20);
 
   //2. init rasp4 motor
   this->raspmotor_->Initialize();
