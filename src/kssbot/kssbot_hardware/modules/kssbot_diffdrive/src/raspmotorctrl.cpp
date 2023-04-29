@@ -127,6 +127,13 @@ void raspmotor::ActivateMotor()
     return; 
 }
 
+void raspmotor::DeactivateMotor()
+{
+    this->is_run_ = false;
+
+    return; 
+}
+
 void raspmotor::ResetMotor()
 {
     this->is_err_ = false;
@@ -396,11 +403,6 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
         l_motor_val = l_motor_val * 1.3;
         r_motor_val = r_motor_val * 1.3;
     }
-    else 
-    {
-        l_motor_val = l_motor_val * 1.1;
-        r_motor_val = r_motor_val * 1.1;
-    }
 
     //1. check upcoming command. If command is same with present. ignore upcoming command
     if(this->write_left_motor_val_ != l_motor_val) 
@@ -411,23 +413,6 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     
     //printf("left : %d, right : %d \n", l_motor_cmd_, r_motor_cmd_);
     //printf("left : %f, right : %f \n", l_motor_cmd, r_motor_cmd);
-    return;
-}
-
-void raspmotor::StopMotor()
-{
-    digitalWrite(Motor_A_Pin1, LOW);
-
-    digitalWrite(Motor_A_Pin2, LOW);
-
-    digitalWrite(Motor_B_Pin1, LOW);
-
-    digitalWrite(Motor_B_Pin2, LOW);
-
-    digitalWrite(Motor_A_EN, LOW);
-
-    digitalWrite(Motor_B_EN, LOW);
-
     return;
 }
 
@@ -454,6 +439,23 @@ void raspmotor::PreMotorDrive()
     LeftMotorControl(l_dir, l_motor_cmd_);
 
     RightMotorControl(r_dir, r_motor_cmd_);
+
+    return;
+}
+
+void raspmotor::StopMotor()
+{
+    digitalWrite(Motor_A_Pin1, LOW);
+
+    digitalWrite(Motor_A_Pin2, LOW);
+
+    digitalWrite(Motor_B_Pin1, LOW);
+
+    digitalWrite(Motor_B_Pin2, LOW);
+
+    digitalWrite(Motor_A_EN, LOW);
+
+    digitalWrite(Motor_B_EN, LOW);
 
     return;
 }
