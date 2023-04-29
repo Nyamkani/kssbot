@@ -127,7 +127,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_activate(
   //rasp4 motor driver initialize
 
   //1. main rasp4 motor start
-  if(!(this->raspmotor_)) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 20, 20);
+  if(!(this->raspmotor_)) this->raspmotor_ = std::make_unique<raspmotor>(BCM, 30, 30);
 
   //2. init rasp4 motor
   this->raspmotor_->Initialize();
@@ -245,7 +245,7 @@ hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
 
       usleep(10000);
     }
-    
+
     return hardware_interface::return_type::OK;
   }
 

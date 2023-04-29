@@ -387,24 +387,27 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     double l_motor_cmd_ = l_motor_cmd;
     double r_motor_cmd_ = r_motor_cmd;
 
-    int l_motor_val = l_motor_cmd * this->motor_vel;
-    int r_motor_val = r_motor_cmd * this->motor_vel;
+    int l_motor_val = l_motor_cmd_ * this->motor_vel;
+    int r_motor_val = r_motor_cmd_ * this->motor_vel;
 
     if((l_motor_cmd_ > 0.0 && r_motor_cmd_ > 0.0) ||
         (l_motor_cmd_ < 0.0 && r_motor_cmd_ < 0.0) )
     {
-        l_motor_val = l_motor_cmd * 1.3;
-        r_motor_val = r_motor_cmd * 1.3;
+        l_motor_val = l_motor_val * 1.3;
+        r_motor_val = r_motor_val * 1.3;
     }
     else 
     {
-        l_motor_val = l_motor_cmd * 1.1;
-        r_motor_val = r_motor_cmd * 1.1;
+        l_motor_val = l_motor_val * 1.1;
+        r_motor_val = r_motor_val * 1.1;
     }
 
     //1. check upcoming command. If command is same with present. ignore upcoming command
-    if(this->write_left_motor_val_ != l_motor_val) this->write_left_motor_val_  = l_motor_val;
-    if(this->write_right_motor_val_ != r_motor_val) this->write_right_motor_val_ = r_motor_val;
+    if(this->write_left_motor_val_ != l_motor_val) 
+        this->write_left_motor_val_  = l_motor_val;
+
+    if(this->write_right_motor_val_ != r_motor_val) 
+        this->write_right_motor_val_ = r_motor_val;
     
     //printf("left : %d, right : %d \n", l_motor_cmd_, r_motor_cmd_);
     //printf("left : %f, right : %f \n", l_motor_cmd, r_motor_cmd);
@@ -441,8 +444,8 @@ void raspmotor::PreMotorDrive()
     l_motor_cmd_ = abs(l_motor_cmd_);
     r_motor_cmd_ = abs(r_motor_cmd_);
 
-    //if(l_motor_cmd_ >= 50) l_motor_cmd_ =50;
-    //if(r_motor_cmd_ >= 50) r_motor_cmd_ =50;
+    if(l_motor_cmd_ >= 100) l_motor_cmd_ = 100;
+    if(r_motor_cmd_ >= 100) r_motor_cmd_ = 100;
 
     pwm_left_motor_queue.clear();
 
