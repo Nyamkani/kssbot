@@ -76,9 +76,9 @@ class raspmotor
 {
     //--------------------------------------------Values
     public:
-        bool is_init_ = false;
-        bool is_run_ = false;
-        bool is_err_ = false;
+        bool is_init_;
+        bool is_run_;
+        bool is_err_;
 
     private:
         int pin_mode_type_;

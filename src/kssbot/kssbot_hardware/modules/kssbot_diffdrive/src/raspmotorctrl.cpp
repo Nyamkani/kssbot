@@ -396,6 +396,11 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
         l_motor_val = l_motor_cmd * 1.3;
         r_motor_val = r_motor_cmd * 1.3;
     }
+    else 
+    {
+        l_motor_val = l_motor_cmd * 1.1;
+        r_motor_val = r_motor_cmd * 1.1;
+    }
 
     //1. check upcoming command. If command is same with present. ignore upcoming command
     if(this->write_left_motor_val_ != l_motor_val) this->write_left_motor_val_  = l_motor_val;

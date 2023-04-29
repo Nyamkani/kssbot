@@ -245,8 +245,7 @@ hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
 
       usleep(10000);
     }
-
-
+    
     return hardware_interface::return_type::OK;
   }
 
