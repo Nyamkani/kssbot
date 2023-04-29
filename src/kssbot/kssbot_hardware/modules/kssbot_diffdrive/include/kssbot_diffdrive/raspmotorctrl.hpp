@@ -76,9 +76,9 @@ class raspmotor
 {
     //--------------------------------------------Values
     public:
-        bool is_init_;
-        bool is_run_;
-        bool is_err_;
+        bool is_init_ = false;
+        bool is_run_ = false;
+        bool is_err_ = false;
 
     private:
         int pin_mode_type_;
@@ -108,13 +108,17 @@ class raspmotor
 
         void Initialize();
 
-        void LinkRosToRasp(double l_motor_cmd, double r_motor_cmd);
+        void ActivateMotor();
+
+        void ResetMotor();
 
         void StopMotor();
 
+        void LinkRosToRasp(double l_motor_cmd, double r_motor_cmd);
+
         bool Drive();
 
-
+    
     private:
         void InitalizePinModeType();
 

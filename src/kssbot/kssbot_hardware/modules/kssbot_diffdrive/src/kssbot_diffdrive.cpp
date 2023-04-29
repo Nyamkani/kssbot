@@ -136,7 +136,7 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_activate(
   if(!(this->raspmotor_)) return hardware_interface::CallbackReturn::ERROR;
 
   //4. set main loop online
-  this->raspmotor_->is_run_ = true;
+  this->raspmotor_->ActivateMotor();
 
   //5. make thread
   std::thread drive_loop_(&kssbot_diffdrive_rasp4::DriveMotor, this);
@@ -239,10 +239,8 @@ hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
   {
     if(!(this->raspmotor_)) return hardware_interface::return_type::ERROR;
 
-    while(1)
+    while(this->raspmotor_->is_run_)
     {
-      if(!(this->raspmotor_->is_run_)) break;
-
       this->raspmotor_->Drive();
 
       usleep(10000);
