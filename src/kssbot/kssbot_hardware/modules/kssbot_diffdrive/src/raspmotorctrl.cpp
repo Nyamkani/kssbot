@@ -388,19 +388,37 @@ void raspmotor::RightMotorDriveSaveQueue(pwm_motor_val data)
     return;
 }
 
-
+/*Due to dc motor control, we must set minimum pwm power over 40%*/
 void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
 {
-    const int l_motor_val = (int)l_motor_cmd;
-    const int r_motor_val = (int)r_motor_cmd;
+    //send buffer
+    double l_motor_val = l_motor_cmd; //* this->motor_vel_mux_;
+    double r_motor_val = r_motor_cmd; //* this->motor_vel_mux_;
 
-    //1. check upcoming command. If command is same with present. ignore upcoming command
-    if(this->write_left_motor_val_ != l_motor_val) 
-        this->write_left_motor_val_  = l_motor_val;
+    double mux_ = 0;
 
-    if(this->write_right_motor_val_ != r_motor_val) 
-        this->write_right_motor_val_ = r_motor_val;
+    //left motor
+    if(abs(l_motor_val) > 2.0)
+        mux_ = 2.0 + (abs(l_motor_val) - 2.0) * 0.05;
     
+    if(l_motor_val < 0.0) mux_ *= -1.0;
+
+    l_motor_val = mux_ * (double)motor_vel_mux_;
+
+    if((this->write_left_motor_val_) != (int)l_motor_val)
+        this->write_left_motor_val_  = (int)l_motor_val;
+
+    //right motor
+    if(abs(r_motor_val) > 2.0)
+        r_motor_val = 2.0 + (abs(r_motor_val) - 2.0) * 0.05;
+
+    if(r_motor_val < 0.0) mux_ *= -1.0;
+
+    r_motor_val = mux_ * (double)motor_vel_mux_;
+
+    if((this->write_left_motor_val_) != (int)r_motor_val)
+        this->write_left_motor_val_  = (int)r_motor_val;
+
     //printf("left : %d, right : %d \n", l_motor_cmd_, r_motor_cmd_);
     //printf("left : %f, right : %f \n", l_motor_cmd, r_motor_cmd);
     return;
@@ -413,6 +431,7 @@ void raspmotor::PreMotorDrive()
     int r_motor_cmd_ = this->write_right_motor_val_;
     int r_dir = forward;
 
+    //get direction and absoulute speed
     if(l_motor_cmd_< 0) l_dir = backward;
     if(r_motor_cmd_< 0) r_dir = backward;
 
@@ -420,12 +439,7 @@ void raspmotor::PreMotorDrive()
     r_motor_cmd_ = abs(r_motor_cmd_);
 
     if(l_motor_cmd_ >= 100) l_motor_cmd_ = 100;
-    else if(l_motor_cmd_ <= 2) l_motor_cmd_ *= this->motor_vel;
-    else l_motor_cmd_ = 2 * this->motor_vel + l_motor_cmd_;
-
     if(r_motor_cmd_ >= 100) r_motor_cmd_ = 100;
-    else if(r_motor_cmd_ <= 2) r_motor_cmd_ *= this->motor_vel;
-    else r_motor_cmd_ = 2 * this->motor_vel + r_motor_cmd_;
 
     pwm_left_motor_queue.clear();
 

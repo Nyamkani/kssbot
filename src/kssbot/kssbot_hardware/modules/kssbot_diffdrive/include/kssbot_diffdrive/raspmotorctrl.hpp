@@ -3,7 +3,7 @@
 #include <vector>
 #include <thread>
 #include <iostream>		// Include all needed libraries here
-
+#include <cmath>
 /*
  +-----+-----+---------+------+---+---Pi 4B--+---+------+---------+-----+-----+
  | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
@@ -85,7 +85,7 @@ class raspmotor
         int error_code_;
         int pwm_acc_ = 0;
         int pwm_dec_ = 0;
-        const int motor_vel = 20;
+        const int motor_vel_mux_ = 20;
 
         int write_left_motor_val_ = 0;
         int write_right_motor_val_ = 0;
