@@ -257,7 +257,7 @@ void raspmotor::LeftMotorControl(int direction, int speed)
 
 void raspmotor::RightMotorControl(int direction, int speed)
 {
-   int direction_ = direction;
+    int direction_ = direction;
     int speed_ = speed;
     int tickcount = 0;
     int leftover = 0;
@@ -366,12 +366,6 @@ void raspmotor::RightMotorControl(int direction, int speed)
     return;
 }
 
-
-
-
-
-
-
 void raspmotor::LeftMotorDriveSaveQueue(pwm_motor_val data)
 {
     this->pwm_left_motor_queue.push_back(data);
@@ -388,39 +382,94 @@ void raspmotor::RightMotorDriveSaveQueue(pwm_motor_val data)
     return;
 }
 
-/*Due to dc motor control, we must set minimum pwm power over 40%*/
+/*Due to dc motor control, we must set minimum pwm power over 50%*/
 void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
 {
     //send buffer
-    double l_motor_val = l_motor_cmd; //* this->motor_vel_mux_;
-    double r_motor_val = r_motor_cmd; //* this->motor_vel_mux_;
+    int l_motor_val = l_motor_cmd; //* this->motor_vel_mux_;
+    int r_motor_val = r_motor_cmd; //* this->motor_vel_mux_;
 
-    double mux_ = 0;
+    double l_mux_ = 1;
+    double r_mux_ = 1;
 
     //left motor
-    if(abs(l_motor_val) > 2.0)
-        mux_ = 2.0 + (abs(l_motor_val) - 2.0) * 0.05;
+    if(abs(l_motor_val) > 2)
+    {
+        l_mux_ = 2 + ((abs(r_motor_val) - 2) * 0.025);
+
+        if(l_motor_val < 0) l_mux_ *= -1;
+
+        l_motor_val = l_mux_ * this->motor_vel_mux_;
+    }
+    else
+    {
+        if(abs(l_motor_val) > 0)
+        {
+            if(l_motor_val < 0) l_mux_ = -1;
     
-    if(l_motor_val < 0.0) mux_ *= -1.0;
+            if(abs(l_motor_val) > 1)
+            {
+                l_motor_val = l_mux_ * 50;
+            }
+            else   
+            {
+                l_motor_val = l_mux_ * 40;
+            }
+        }
+        else 
+        {
+            l_motor_val = 0;
+        }
+    }
 
-    l_motor_val = mux_ * (double)motor_vel_mux_;
+    l_motor_val *= this->motor_vel_mux_;
 
-    if((this->write_left_motor_val_) != (int)l_motor_val)
-        this->write_left_motor_val_  = (int)l_motor_val;
+    if((this->write_left_motor_val_) != l_motor_val)
+    {
+        this->write_left_motor_val_  = l_motor_val; 
+    }   
+
 
     //right motor
-    if(abs(r_motor_val) > 2.0)
-        r_motor_val = 2.0 + (abs(r_motor_val) - 2.0) * 0.05;
+    if(abs(r_motor_val) > 2)
+    {
+        r_mux_ = 2 + ((abs(r_motor_val) - 2) * 0.025);
 
-    if(r_motor_val < 0.0) mux_ *= -1.0;
+        if(r_motor_val < 0) r_mux_ *= -1;
 
-    r_motor_val = mux_ * (double)motor_vel_mux_;
+        r_motor_val = r_mux_ * motor_vel_mux_;   
+    }
+    else
+    {
+        if(abs(r_motor_val) > 0)
+        {
+            if(r_motor_val < 0) r_mux_ = -1;
 
-    if((this->write_left_motor_val_) != (int)r_motor_val)
-        this->write_left_motor_val_  = (int)r_motor_val;
+            if(abs(r_motor_val) > 1)
+            {
+                r_motor_val = r_mux_ * 50;
+            }
+            else
+            {
+                r_motor_val = r_mux_ * 40;
+            }       
+        }
+        else 
+        {
+            r_motor_val = 0;
+        }
+    }
+
+    r_motor_val *= this->motor_vel_mux_;
+
+    if((this->write_right_motor_val_) != r_motor_val)
+    {
+        this->write_right_motor_val_  = r_motor_val;
+    }
 
     //printf("left : %d, right : %d \n", l_motor_cmd_, r_motor_cmd_);
     //printf("left : %f, right : %f \n", l_motor_cmd, r_motor_cmd);
+
     return;
 }
 
@@ -441,13 +490,21 @@ void raspmotor::PreMotorDrive()
     if(l_motor_cmd_ >= 100) l_motor_cmd_ = 100;
     if(r_motor_cmd_ >= 100) r_motor_cmd_ = 100;
 
-    pwm_left_motor_queue.clear();
+    if(read_left_motor_val_.pwm_motor_dir_ != l_dir ||
+      read_left_motor_val_.pwm_motor_speed_  != l_motor_cmd_)
+    {
+        pwm_left_motor_queue.clear();
 
-    pwm_right_motor_queue.clear();
+        LeftMotorControl(l_dir, l_motor_cmd_);
+    }
 
-    LeftMotorControl(l_dir, l_motor_cmd_);
+    if(read_right_motor_val_.pwm_motor_dir_ != r_dir ||
+      read_right_motor_val_.pwm_motor_speed_  != r_motor_cmd_)
+    {
+        pwm_right_motor_queue.clear();
 
-    RightMotorControl(r_dir, r_motor_cmd_);
+        RightMotorControl(r_dir, r_motor_cmd_);
+    }
 
     return;
 }
@@ -499,7 +556,6 @@ void raspmotor::LeftMotorDrive()
 void raspmotor::RightMotorDrive()
 {
     if(this->pwm_right_motor_queue.empty()) return;
-
 
     const pwm_motor_val temp_right_motor_val = pwm_right_motor_queue.front();
 

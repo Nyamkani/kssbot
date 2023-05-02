@@ -85,7 +85,7 @@ class raspmotor
         int error_code_;
         int pwm_acc_ = 0;
         int pwm_dec_ = 0;
-        const int motor_vel_mux_ = 20;
+        const int motor_vel_mux_ = 25;
 
         int write_left_motor_val_ = 0;
         int write_right_motor_val_ = 0;
@@ -131,7 +131,7 @@ class raspmotor
         void RightMotorControl(int direction, int speed);
 
         void LeftMotorDrive();
-
+ 
         void RightMotorDrive();
 
         void PreMotorDrive();

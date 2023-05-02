@@ -85,7 +85,7 @@ namespace kssbot_hardware
       //main rasp4 motor class
       std::unique_ptr<raspmotor> raspmotor_{nullptr};
 
-      std::thread drive_loop_;
+      std::thread* drive_loop_{nullptr};
 
       Config cfg_;
 
