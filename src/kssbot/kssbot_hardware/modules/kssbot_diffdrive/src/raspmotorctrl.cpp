@@ -395,7 +395,7 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     //left motor
     if(abs(l_motor_val) > 2)
     {
-        l_mux_ = 2 + ((abs(r_motor_val) - 2) * 0.025);
+        l_mux_ = 2 + (abs(l_motor_val) - 2) * 0.025;
 
         if(l_motor_val < 0) l_mux_ *= -1;
 
@@ -422,8 +422,6 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
         }
     }
 
-    l_motor_val *= this->motor_vel_mux_;
-
     if((this->write_left_motor_val_) != l_motor_val)
     {
         this->write_left_motor_val_  = l_motor_val; 
@@ -433,7 +431,7 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     //right motor
     if(abs(r_motor_val) > 2)
     {
-        r_mux_ = 2 + ((abs(r_motor_val) - 2) * 0.025);
+        r_mux_ = 2 + (abs(r_motor_val) - 2) * 0.025;
 
         if(r_motor_val < 0) r_mux_ *= -1;
 
@@ -459,8 +457,6 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
             r_motor_val = 0;
         }
     }
-
-    r_motor_val *= this->motor_vel_mux_;
 
     if((this->write_right_motor_val_) != r_motor_val)
     {
@@ -493,7 +489,7 @@ void raspmotor::PreMotorDrive()
     if(read_left_motor_val_.pwm_motor_dir_ != l_dir ||
       read_left_motor_val_.pwm_motor_speed_  != l_motor_cmd_)
     {
-        pwm_left_motor_queue.clear();
+        //pwm_left_motor_queue.clear();
 
         LeftMotorControl(l_dir, l_motor_cmd_);
     }
@@ -501,7 +497,7 @@ void raspmotor::PreMotorDrive()
     if(read_right_motor_val_.pwm_motor_dir_ != r_dir ||
       read_right_motor_val_.pwm_motor_speed_  != r_motor_cmd_)
     {
-        pwm_right_motor_queue.clear();
+        //pwm_right_motor_queue.clear();
 
         RightMotorControl(r_dir, r_motor_cmd_);
     }
@@ -556,6 +552,7 @@ void raspmotor::LeftMotorDrive()
 void raspmotor::RightMotorDrive()
 {
     if(this->pwm_right_motor_queue.empty()) return;
+
 
     const pwm_motor_val temp_right_motor_val = pwm_right_motor_queue.front();
 
