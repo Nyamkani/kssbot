@@ -409,7 +409,7 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
     
             if(abs(l_motor_val) > 1)
             {
-                l_motor_val = l_mux_ * 50;
+                l_motor_val = l_mux_ * 60;
             }
             else   
             {
@@ -445,7 +445,7 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
 
             if(abs(r_motor_val) > 1)
             {
-                r_motor_val = r_mux_ * 50;
+                r_motor_val = r_mux_ * 60;
             }
             else
             {
@@ -471,37 +471,45 @@ void raspmotor::LinkRosToRasp(double l_motor_cmd, double r_motor_cmd)
 
 void raspmotor::PreMotorDrive()
 {
+    //get direction and absoulute speed
+
+    //left
+    int left_speed = read_left_motor_val_.pwm_motor_speed_;
     int l_motor_cmd_ = this->write_left_motor_val_;
     int l_dir = forward;
-    int r_motor_cmd_ = this->write_right_motor_val_;
-    int r_dir = forward;
 
-    //get direction and absoulute speed
-    if(l_motor_cmd_< 0) l_dir = backward;
-    if(r_motor_cmd_< 0) r_dir = backward;
+    if(read_left_motor_val_.pwm_motor_dir_ == backward)
+        left_speed *= -1;
 
-    l_motor_cmd_ = abs(l_motor_cmd_);
-    r_motor_cmd_ = abs(r_motor_cmd_);
-
-    if(l_motor_cmd_ >= 100) l_motor_cmd_ = 100;
-    if(r_motor_cmd_ >= 100) r_motor_cmd_ = 100;
-
-    if(read_left_motor_val_.pwm_motor_dir_ != l_dir ||
-      read_left_motor_val_.pwm_motor_speed_  != l_motor_cmd_)
+    if(left_speed != l_motor_cmd_)
     {
-        //pwm_left_motor_queue.clear();
+        if(l_motor_cmd_< 0) l_dir = backward;
+
+        l_motor_cmd_ = abs(l_motor_cmd_);
+
+        if(l_motor_cmd_ >= 100) l_motor_cmd_ = 100;
 
         LeftMotorControl(l_dir, l_motor_cmd_);
     }
+       
+    //right
+    int right_speed = read_right_motor_val_.pwm_motor_speed_;
+    int r_motor_cmd_ = this->write_right_motor_val_;
+    int r_dir = forward;
 
-    if(read_right_motor_val_.pwm_motor_dir_ != r_dir ||
-      read_right_motor_val_.pwm_motor_speed_  != r_motor_cmd_)
+    if(read_right_motor_val_.pwm_motor_dir_ == backward)
+        right_speed *= -1;
+
+    if(right_speed != r_motor_cmd_)
     {
-        //pwm_right_motor_queue.clear();
+        if(r_motor_cmd_< 0) r_dir = backward;
+
+        r_motor_cmd_ = abs(r_motor_cmd_);
+
+        if(r_motor_cmd_ >= 100) r_motor_cmd_ = 100;
 
         RightMotorControl(r_dir, r_motor_cmd_);
     }
-
     return;
 }
 
