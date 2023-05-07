@@ -73,5 +73,6 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led"
 }

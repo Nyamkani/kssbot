@@ -26,13 +26,13 @@
 #define WS2812_RPI_DEFINES_H
 
 // Base Addresses
-#define DMA_BASE        0x20007000
+#define DMA_BASE        0x3f007000    // 0x7e007000
 #define DMA_LEN         0x24
-#define PWM_BASE        0x2020C000
+#define PWM_BASE        0x3f20C000
 #define PWM_LEN         0x28
-#define CLK_BASE        0x20101000
+#define CLK_BASE        0x3f101000
 #define CLK_LEN         0xA8
-#define GPIO_BASE       0x20200000
+#define GPIO_BASE       0x3f200000
 #define GPIO_LEN        0xB4
 
 // GPIO

@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-633f291c43ebf0c0ea7d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "kssbot_led",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "kssbot_led::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kssbot_led-Debug-78f386bab38c4fe19a86.json",
+					"name" : "kssbot_led",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "kssbot_led_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kssbot_led_uninstall-Debug-c7ebc0983276e21f7fed.json",
+					"name" : "kssbot_led_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "main_program::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-main_program-Debug-793e1f069db5d2e378c6.json",
+					"name" : "main_program",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Debug-6a4ad8cf976ad8af8cef.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/build",
+		"source" : "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -1,0 +1,1 @@
+/usr/bin/g++ -fPIC -g -shared -Wl,-soname,libkssbot_led.so -o libkssbot_led.so CMakeFiles/kssbot_led.dir/src/ws2812-rpi.cpp.o 

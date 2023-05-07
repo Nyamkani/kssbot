@@ -1,18 +1,42 @@
 <?xml version="1.0"?>
-<!-- Basic differential drive mobile base -->
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffdrive_robot">
-  <xacro:arg name="prefix" default="" />
 
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kssbot">
+
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_ros2_control" default="true"/>
+  <xacro:arg name="sim_mode" default="false"/>
+
+
+  <!-- Basic differential drive mobile base -->
   <xacro:include filename="$(find kssbot_description)/urdf/kssbot_description.urdf.xacro" />
 
   <!-- Import Rviz colors -->
-  <xacro:include filename="$(find kssbot_description)/gazebo/kssbot.materials.xacro" />
+  <xacro:include filename="$(find kssbot_description)/urdf/kssbot.materials.xacro" />
 
   <!-- Import kssbot ros2_control description -->
-  <xacro:include filename="$(find kssbot_description)/ros2_control/kssbot.ros2_control.xacro" />
+  <!-- if use ros2_control  -->
+  <xacro:if value="$(arg use_ros2_control)">
 
-  <xacro:kssbot prefix="$(arg prefix)" />
+    <xacro:include filename="$(find kssbot_description)/ros2_control/kssbot.ros2_control.xacro" />
 
-  <xacro:kssbot_ros2_control name="kssBot" prefix="$(arg prefix)" />
+    <!-- this line is for urdf reading(kssbot_description.urdf.xacro) -->
+    <xacro:kssbot prefix="$(arg prefix)" />
+
+    <!-- this line is for ros2_control reading(kssbot.ros2_control.xacro) -->
+    <xacro:kssbot_ros2_control name="kssBot" prefix="$(arg prefix)" />
+
+  </xacro:if>
+
+  <!-- if use gazebo  -->
+  <xacro:unless value="$(arg use_ros2_control)">
+
+    <xacro:include filename="$(find kssbot_description)/ros2_control/kssbot.gazebo.xacro" />
+
+  </xacro:unless>
+
+  <!-- Add addtional component description -->
+  <!-- <xacro:include filename="lidar.xacro" /> -->
+  <!-- <xacro:include filename="camera.xacro" /> -->
+
 
 </robot>

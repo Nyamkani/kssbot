@@ -251,7 +251,6 @@ hardware_interface::return_type kssbot_hardware::kssbot_diffdrive_rasp4::write(
     return hardware_interface::return_type::OK;
   }
 
-
 }  // namespace kssbot_hardware
 
 #include "pluginlib/class_list_macros.hpp"

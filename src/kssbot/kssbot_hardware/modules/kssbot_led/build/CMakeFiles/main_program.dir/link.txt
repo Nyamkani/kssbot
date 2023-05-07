@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/main_program.dir/src/ws2812-rpi-test.cpp.o -o main_program  -Wl,-rpath,/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/build: libkssbot_led.so 

@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/build",
+  "command": "/usr/bin/g++ -Dkssbot_led_EXPORTS -I/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/include -g -fPIC -Wall -Wextra -std=gnu++14 -o CMakeFiles/kssbot_led.dir/src/ws2812-rpi.cpp.o -c /home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/src/ws2812-rpi.cpp",
+  "file": "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/src/ws2812-rpi.cpp"
+},
+{
+  "directory": "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/build",
+  "command": "/usr/bin/g++  -I/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/include -g -Wall -Wextra -std=gnu++14 -o CMakeFiles/main_program.dir/src/ws2812-rpi-test.cpp.o -c /home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/src/ws2812-rpi-test.cpp",
+  "file": "/home/kssvm/workspace/ros2/humble/src/kssbot/src/kssbot/kssbot_hardware/modules/kssbot_led/src/ws2812-rpi-test.cpp"
+}
+]

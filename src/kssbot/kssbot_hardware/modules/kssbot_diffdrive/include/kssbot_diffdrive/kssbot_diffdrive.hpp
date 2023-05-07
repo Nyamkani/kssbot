@@ -45,6 +45,8 @@
 #include "config.hpp"
 #include "wheel.hpp"
 
+#include <signal.h>
+
 namespace kssbot_hardware
 {
   class kssbot_diffdrive_rasp4 : public hardware_interface::SystemInterface

@@ -29,37 +29,54 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    # Get URDF via xacro
-    robot_description_content = Command(
+    #Common Setting
+    use_sim_time = 'false'
+    use_ros2_control = 'true'
+
+    #URDF Setting
+    xacro_file= PathJoinSubstitution(
         [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [FindPackageShare("kssbot_description"), "urdf", "kssbot.urdf.xacro"]
-            ),
+            FindPackageShare("kssbot_description"),
+            "urdf", "kssbot.urdf.xacro",
         ]
     )
+
+    robot_description_content = Command(
+        [
+            'xacro ', xacro_file, 
+            ' use_ros2_control:=', use_ros2_control, 
+            ' sim_mode:=', use_sim_time,
+        ]
+    )
+    
     robot_description = {"robot_description": robot_description_content}
 
     robot_controllers = PathJoinSubstitution(
         [
             FindPackageShare("kssbot_bringup"),
-            "config",
-            "kssbot_controllers.yaml",
+            "config", "kssbot_controllers.yaml",
         ]
     )
+
+    #RVIZ Setting
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("kssbot_description"), "config", "kssbot.rviz"]
+        [
+            FindPackageShare("kssbot_description"), 
+            "config", "kssbot.rviz"
+        ]
     )
+
     #for launching python launch file 
     joystick_launch_file_dir = os.path.join(get_package_share_directory('kss_joystick'), 'launch')
 
+    #for setting nodes
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_description, robot_controllers],
         output="both",
     )
+
     robot_state_pub_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -105,20 +122,11 @@ def generate_launch_description():
         )
     )
 
-    nodes = [
+    return LaunchDescription([
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
-    ]
-
-    return LaunchDescription([
-        #nodes,
-        control_node,
-        robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        #delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,        
+        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,      
         IncludeLaunchDescription(PythonLaunchDescriptionSource([joystick_launch_file_dir, '/joystick.launch.py'])),
     ])

@@ -12,42 +12,44 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(hardware_interface REQUIRED)
-find_package(controller_manager REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
-
-
-# Link against wiringPi
-SET(CMAKE_CXX_FLAGS "-pthread -I/usr/local/include -L/usr/local/lib -lwiringPi")
-
-find_library(WIRINGPI_LIBRARIES wiringPi)
+# find_package(hardware_interface REQUIRED)
+# find_package(controller_manager REQUIRED)
+# find_package(pluginlib REQUIRED)
+# find_package(rclcpp REQUIRED)
+# find_package(rclcpp_lifecycle REQUIRED)
 
 # COMPILE
 add_library(${PROJECT_NAME} SHARED
-  src/kssbot_led.cpp 
-  src/raspledctrl.cpp 
+  #src/kssbot_led.cpp 
+  #src/raspledctrl.cpp 
+  src/ws2812-rpi.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} ${WIRINGPI_LIBRARIES})
+set(SOURCE src/ws2812-rpi-test.cpp)
+
+add_executable(main_program ${SOURCE})
+
+target_link_libraries(main_program ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
   ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
 
+#target_compile_options(main_program PRIVATE -Wall -Werror)
+
 ament_target_dependencies(
+  #main_program
   ${PROJECT_NAME}
-  hardware_interface
-  controller_manager
-  pluginlib
-  rclcpp
-  rclcpp_lifecycle
+  # hardware_interface
+  # controller_manager
+  # pluginlib
+  # rclcpp
+  # rclcpp_lifecycle
 )
 
 # INSTALL
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS main_program
   DESTINATION lib
 )
 

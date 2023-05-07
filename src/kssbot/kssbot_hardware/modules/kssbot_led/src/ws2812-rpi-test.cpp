@@ -23,10 +23,10 @@
 ###############################################################################
 */
 
-#include "ws2812-rpi.h"
+#include "kssbot_led/ws2812-rpi.h"
 
 int main(int argc, char **argv){
-    NeoPixel *n=new NeoPixel(24);
+    NeoPixel *n=new NeoPixel(2);
 
     while(true) n->effectsDemo();
     delete n;

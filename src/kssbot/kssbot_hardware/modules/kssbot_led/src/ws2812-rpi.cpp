@@ -22,7 +22,7 @@
 #                                                                             #
 ###############################################################################
 */
-#include "ws2812-rpi.h"
+#include "kssbot_led/ws2812-rpi.h"
 
 struct control_data_s* NeoPixel::ctl=0;
 uint8_t* NeoPixel::virtbase=0;
@@ -223,7 +223,7 @@ unsigned int NeoPixel::mem_phys_to_virt(uint32_t phys){
 
     for (i = 0; i < NUM_PAGES; i++) {
         if (page_map[i].physaddr == pg_addr) {
-            return (uint32_t)virtbase + i * PAGE_SIZE + pg_offset;
+            return (long)virtbase + i * PAGE_SIZE + pg_offset;
         }
     }
     fatal("Failed to reverse map phys addr %08x\n", phys);
@@ -308,7 +308,6 @@ void NeoPixel::initHardware(){
     pwm_reg = (unsigned int*)map_peripheral(PWM_BASE, PWM_LEN);
     clk_reg = (unsigned int*)map_peripheral(CLK_BASE, CLK_LEN);
     gpio_reg = (unsigned int*)map_peripheral(GPIO_BASE, GPIO_LEN);
-
 
     // Set PWM alternate function for GPIO18
     SET_GPIO_ALT(18, 5);
