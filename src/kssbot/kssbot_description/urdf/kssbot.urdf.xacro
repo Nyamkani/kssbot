@@ -19,7 +19,7 @@
 
     <xacro:include filename="$(find kssbot_description)/ros2_control/kssbot.ros2_control.xacro" />
 
-    <!-- this line is for urdf reading(kssbot_description.urdf.xacro) -->
+    <!-- this line is for urdf reading() -->
     <xacro:kssbot prefix="$(arg prefix)" />
 
     <!-- this line is for ros2_control reading(kssbot.ros2_control.xacro) -->

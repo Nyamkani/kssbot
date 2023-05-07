@@ -51,6 +51,13 @@ def generate_launch_description():
     
     robot_description = {"robot_description": robot_description_content}
 
+    robot_controllers = PathJoinSubstitution(
+        [
+            FindPackageShare("kssbot_bringup"),
+            "config", "kssbot_sim.controllers.yaml",
+        ]
+    )
+
     #RVIZ Setting
     rviz_config_file = PathJoinSubstitution(
         [
@@ -60,7 +67,11 @@ def generate_launch_description():
     )
 
     #for launching python launch file 
-    joystick_launch_file_dir = os.path.join(get_package_share_directory('kss_joystick'), 'launch')
+    joystick_node = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('kss_joystick'),'launch','joystick.launch.py'
+                )]), launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
 
     #gazebo_params_file = os.path.join(get_package_share_directory(package_name),'config','gazebo_params.yaml')
 
@@ -79,6 +90,13 @@ def generate_launch_description():
 
 
     #for setting nodes
+    control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description, robot_controllers],
+        output="both",
+    )
+
     robot_state_pub_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -125,11 +143,13 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,      
+        joystick_node,
+        control_node,
         gazebo,
         spawn_entity,  
-        IncludeLaunchDescription(PythonLaunchDescriptionSource([joystick_launch_file_dir, '/joystick.launch.py'])),
+        robot_state_pub_node,
+        joint_state_broadcaster_spawner,
+        #delay_rviz_after_joint_state_broadcaster_spawner,
+        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,      
+
     ])

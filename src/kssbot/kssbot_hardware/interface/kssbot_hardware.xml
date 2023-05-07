@@ -8,6 +8,8 @@
     </description>
   </class>
   
+</library>
+
 <!-- 
   <class name="kssbot_hardware/DiffBotSystemHardware"
          type="kssbot_hardware::DiffBotSystemHardware"
@@ -18,4 +20,3 @@
   </class>
  -->
 
-</library>

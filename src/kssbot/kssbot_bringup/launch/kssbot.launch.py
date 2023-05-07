@@ -67,7 +67,11 @@ def generate_launch_description():
     )
 
     #for launching python launch file 
-    joystick_launch_file_dir = os.path.join(get_package_share_directory('kss_joystick'), 'launch')
+    joystick_node = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('kss_joystick'),'launch','joystick.launch.py'
+                )]), launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
 
     #for setting nodes
     control_node = Node(
@@ -123,10 +127,10 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        joystick_node,
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
+        #delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,      
-        IncludeLaunchDescription(PythonLaunchDescriptionSource([joystick_launch_file_dir, '/joystick.launch.py'])),
     ])
