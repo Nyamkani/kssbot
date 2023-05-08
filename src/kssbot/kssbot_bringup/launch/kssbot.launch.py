@@ -13,7 +13,8 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import RegisterEventHandler, LogInfo, DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
+from launch.conditions import IfCondition, UnlessCondition, LaunchConfigurationEquals, LaunchConfigurationNotEquals
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 
@@ -22,16 +23,15 @@ from launch_ros.substitutions import FindPackageShare
 
 import os
 from launch.substitutions import Command, LaunchConfiguration
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
 
 
 def generate_launch_description():
-    #Common Setting
-    use_sim_time = 'false'
-    use_ros2_control = 'true'
+    #launch argument Setting
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    use_ros2_control = LaunchConfiguration('use_ros2_control')
 
     #URDF Setting
     xacro_file= PathJoinSubstitution(
@@ -54,7 +54,7 @@ def generate_launch_description():
     robot_controllers = PathJoinSubstitution(
         [
             FindPackageShare("kssbot_bringup"),
-            "config", "kssbot_controllers.yaml",
+            "config", "kssbot_sim.controllers.yaml",
         ]
     )
 
@@ -72,6 +72,22 @@ def generate_launch_description():
                     get_package_share_directory('kss_joystick'),'launch','joystick.launch.py'
                 )]), launch_arguments={'use_sim_time': use_sim_time}.items()
     )
+
+    #gazebo_params_file = os.path.join(get_package_share_directory(package_name),'config','gazebo_params.yaml')
+
+    # Include the Gazebo launch file, provided by the gazebo_ros package
+    gazebo = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+                    #launch_arguments={'extra_gazebo_args': '--ros-args --params-file ' + gazebo_params_file}.items()
+             )
+
+    # Run the spawner node from the gazebo_ros package. The entity name doesn't really matter if you only have a single robot.
+    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
+                        arguments=['-topic', 'robot_description',
+                                   '-entity', 'kssbot'],
+                        output='screen')
+
 
     #for setting nodes
     control_node = Node(
@@ -126,11 +142,48 @@ def generate_launch_description():
         )
     )
 
+
+    # Nodes for gazebo simulation
+    launch_simultaion = GroupAction(
+        actions = [
+            joystick_node,
+            control_node,
+            gazebo,
+            spawn_entity,  
+            robot_state_pub_node,
+            joint_state_broadcaster_spawner,
+            #delay_rviz_after_joint_state_broadcaster_spawner,
+            delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,  
+        ],
+            condition = IfCondition(use_sim_time),
+    )
+    
+    # Nodes for realbot
+    launch_kssbot = GroupAction(
+        actions = [
+             
+            joystick_node,
+            control_node,
+            robot_state_pub_node,
+            joint_state_broadcaster_spawner,
+            #delay_rviz_after_joint_state_broadcaster_spawner,
+            delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,  
+        ],
+           condition = UnlessCondition(use_sim_time),
+    )
+
     return LaunchDescription([
-        joystick_node,
-        control_node,
-        robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        #delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,      
+
+        DeclareLaunchArgument( 'use_sim_time',
+            default_value='false', description='Use sim time if true'),
+
+        DeclareLaunchArgument('use_ros2_control',
+            default_value='true',description='Use ros2_control if true'),
+
+        #if use_sim_time = true
+        launch_simultaion,
+
+        #if use_sim_time = false
+        launch_kssbot,
+
     ])
