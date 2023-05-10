@@ -15,7 +15,7 @@
 from launch import LaunchDescription
 from launch.actions import RegisterEventHandler, LogInfo, DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
 from launch.conditions import IfCondition, UnlessCondition, LaunchConfigurationEquals, LaunchConfigurationNotEquals
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 
 from launch_ros.actions import Node
@@ -49,7 +49,7 @@ def generate_launch_description():
         ]
     )
     
-    robot_description = {"robot_description": robot_description_content}
+    robot_description = {"robot_description": robot_description_content, 'use_sim_time': use_sim_time}
 
     robot_controllers = PathJoinSubstitution(
         [
@@ -102,9 +102,9 @@ def generate_launch_description():
         executable="robot_state_publisher",
         output="both",
         parameters=[robot_description],
-        remappings=[
-            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
-        ],
+        # remappings=[
+        #     ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
+        # ],
     )
     rviz_node = Node(
         package="rviz2",
@@ -120,7 +120,7 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
-    robot_controller_spawner = Node(
+    diff_drive_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["kssbot_diff_drive_controller", "-c", "/controller_manager"],
@@ -134,11 +134,35 @@ def generate_launch_description():
         )
     )
 
-    # Delay start of robot_controller after `joint_state_broadcaster`
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+    # # Delay rviz start after `joint_state_broadcaster`
+    # delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+    #     event_handler=OnProcessExit(
+    #         target_action=joint_state_broadcaster_spawner,
+    #         on_exit=[rviz_node],
+    #     )
+    # )
+
+    # Delay rviz start after `joint_state_broadcaster`
+    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
+            on_exit=[rviz_node],
+        )
+    )
+
+    # Delay start of robot_controller after `joint_state_broadcaster`
+    delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=robot_state_pub_node,
+            on_start=[joint_state_broadcaster_spawner],
+        )
+    )
+
+    # Delay start of robot_controller after `joint_state_broadcaster`
+    delayed_diff_drive_spawner = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=robot_state_pub_node,
+            on_start=[diff_drive_controller_spawner],
         )
     )
 
@@ -147,13 +171,19 @@ def generate_launch_description():
     launch_simultaion = GroupAction(
         actions = [
             joystick_node,
-            control_node,
+
+            robot_state_pub_node,
+
             gazebo,
             spawn_entity,  
-            robot_state_pub_node,
+
+            # spawn_entity on_exit-> robot_state_pub_node on_start -> 2 controllers and rviz2
+
+            rviz_node,
+            diff_drive_controller_spawner,
             joint_state_broadcaster_spawner,
-            #delay_rviz_after_joint_state_broadcaster_spawner,
-            delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,  
+            # delay_rviz_after_joint_state_broadcaster_spawner,
+            # delay_diff_drive_controller_spawner_after_joint_state_broadcaster_spawner,  
         ],
             condition = IfCondition(use_sim_time),
     )
@@ -161,13 +191,14 @@ def generate_launch_description():
     # Nodes for realbot
     launch_kssbot = GroupAction(
         actions = [
-             
             joystick_node,
+
             control_node,
+
             robot_state_pub_node,
-            joint_state_broadcaster_spawner,
+            delayed_diff_drive_spawner,
+            delayed_joint_state_broadcaster_spawner,
             #delay_rviz_after_joint_state_broadcaster_spawner,
-            delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,  
         ],
            condition = UnlessCondition(use_sim_time),
     )
