@@ -118,8 +118,6 @@ std::vector<hardware_interface::StateInterface> kssbot_diffdrive_rasp4::export_s
   return state_interfaces;
 }
 
-
-
 std::vector<hardware_interface::CommandInterface> kssbot_diffdrive_rasp4::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
@@ -139,11 +137,6 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_activate(
 
   //1. set main loop online
   this->raspmotor_->ActivateMotor();
-
-  //2. make thread
-  this->drive_loop_ = new std::thread(&kssbot_diffdrive_rasp4::DriveMotor, this);
-
-  drive_loop_->detach();
 
   // set some default values
   // l_wheel_.cmd = 0;
@@ -166,10 +159,6 @@ hardware_interface::CallbackReturn kssbot_diffdrive_rasp4::on_deactivate(
 
    //1. main loop is offline
   this->raspmotor_->DeactivateMotor();
-
-  if (drive_loop_->joinable())
-			drive_loop_->join();
-
 
   RCLCPP_INFO(rclcpp::get_logger("kssbot_hardware"), "Successfully deactivated!");
 

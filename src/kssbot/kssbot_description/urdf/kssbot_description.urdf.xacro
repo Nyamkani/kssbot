@@ -6,12 +6,12 @@
     <!-- Constants for robot dimensions -->
     <xacro:property name="PI" value="3.1415926535897931"/>
 
-    <!-- arbitrary value for base value -->
-    <xacro:property name="base_mass" value="5.0" />
-    <xacro:property name="base_length" value="0.12" />
-    <xacro:property name="base_width" value="0.12" />
-    <xacro:property name="base_height" value="0.065" />
-    <xacro:property name="base_z_offset" value="0.02" />
+    <!-- arbitrary value for chassis value -->
+    <xacro:property name="chassis_mass" value="5.0" />
+    <xacro:property name="chassis_length" value="0.12" />
+    <xacro:property name="chassis_width" value="0.12" />
+    <xacro:property name="chassis_height" value="0.065" />
+    <xacro:property name="chassis_z_offset" value="0.02" />
 
     <!-- arbitrary value for wheel value -->
     <xacro:property name="wheel_mass" value="0.5" /> 
@@ -19,7 +19,7 @@
     <xacro:property name="wheel_radius" value="0.035" />
 
     <!-- Space btw top of beam and the each joint -->
-    <xacro:property name="z_offset" value="${base_height/2}" /> 
+    <xacro:property name="z_offset" value="${chassis_height/2}" /> 
 
     <!-- arbitrary value for ultrasonic eye value -->
     <xacro:property name="sonic_mass" value="0.06" /> 
@@ -51,7 +51,7 @@
     <joint name="chassis_joint" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>
-        <origin xyz="0 0 ${base_z_offset + z_offset}"/>
+        <origin xyz="0 0 ${chassis_z_offset + z_offset}"/>
     </joint>
 
     <!-- Chassis Link-->
@@ -59,7 +59,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${base_length} ${base_width} ${base_height}"/>
+          <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
         </geometry>
         <material name="black"/>
       </visual>
@@ -67,17 +67,17 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <box size="${base_length} ${base_width} ${base_height}"/>
+          <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
         </geometry>
       </collision>
 
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="${base_mass}"/>
+        <mass value="${chassis_mass}"/>
         <inertia
-          ixx="${base_mass / 12.0 * (base_length*base_length + base_height*base_height)}" ixy="0.0" ixz="0.0"
-          iyy="${base_mass / 12.0 * (base_height*base_height + base_width*base_width)}" iyz="0.0"
-          izz="${base_mass / 12.0 * (base_width*base_width + base_length*base_length)}"/>
+          ixx="${chassis_mass / 12.0 * (chassis_length*chassis_length + chassis_height*chassis_height)}" ixy="0.0" ixz="0.0"
+          iyy="${chassis_mass / 12.0 * (chassis_height*chassis_height + chassis_width*chassis_width)}" iyz="0.0"
+          izz="${chassis_mass / 12.0 * (chassis_width*chassis_width + chassis_length*chassis_length)}"/>
       </inertial>
     </link>
 
@@ -85,7 +85,7 @@
     <joint name="left_wheel_joint" type="continuous">
       <parent link="chassis"/>
       <child link="left_wheel"/>
-      <origin xyz="0.035 ${base_width/2 + wheel_len/2} ${base_z_offset-wheel_radius}" rpy="-${PI/2} 0 0"/>
+      <origin xyz="0.035 ${chassis_width/2 + wheel_len/2} ${chassis_z_offset-wheel_radius}" rpy="-${PI/2} 0 0"/>
       <axis xyz="0 0 1"/>
       <dynamics damping="0.2"/>
     </joint>
@@ -122,7 +122,7 @@
     <joint name="left_wheel_dummy_joint" type="fixed">
       <parent link="chassis"/>
       <child link="left_wheel_dummy"/>
-      <origin xyz="-0.055 ${base_width/2 + wheel_len/2} ${base_z_offset-wheel_radius}" rpy="-${PI/2} 0 0"/>
+      <origin xyz="-0.055 ${chassis_width/2 + wheel_len/2} ${chassis_z_offset-wheel_radius}" rpy="-${PI/2} 0 0"/>
       <axis xyz="0 0 1"/>
       <dynamics damping="0.2"/>
     </joint>
@@ -158,7 +158,7 @@
     <joint name="right_wheel_joint" type="continuous">
       <parent link="chassis"/>
       <child link="right_wheel"/>
-      <origin xyz="0.035 -${base_width/2 + wheel_len/2} ${base_z_offset-wheel_radius}" rpy="${PI/2} 0 0"/>
+      <origin xyz="0.035 -${chassis_width/2 + wheel_len/2} ${chassis_z_offset-wheel_radius}" rpy="${PI/2} 0 0"/>
       <axis xyz="0 0 -1"/>
       <dynamics damping="0.2"/>
     </joint>
@@ -195,7 +195,7 @@
     <joint name="right_wheel_dummy_joint" type="fixed">
       <parent link="chassis"/>
       <child link="right_wheel_dummy"/>
-      <origin xyz="-0.055 -${base_width/2 + wheel_len/2} ${base_z_offset-wheel_radius}" rpy="${PI/2} 0 0"/>
+      <origin xyz="-0.055 -${chassis_width/2 + wheel_len/2} ${chassis_z_offset-wheel_radius}" rpy="${PI/2} 0 0"/>
       <axis xyz="0 0 -1"/>
       <dynamics damping="0.2"/>
     </joint>

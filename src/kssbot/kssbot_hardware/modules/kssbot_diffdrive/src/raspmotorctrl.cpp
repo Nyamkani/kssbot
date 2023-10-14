@@ -120,18 +120,32 @@ void raspmotor::Initialize()
      return;
 }
 
-void raspmotor::ActivateMotor()
+bool raspmotor::ActivateMotor()
 {
+    //2. make thread
+    this->drive_loop_ = new std::thread(&raspmotor::DriveLoop, this);
+
+    if(!(this->drive_loop_)) return false;
+
+    drive_loop_->detach();
+
     this->is_run_ = true;
 
-    return; 
+    return true; 
 }
 
-void raspmotor::DeactivateMotor()
+bool raspmotor::DeactivateMotor()
 {
     this->is_run_ = false;
 
-    return; 
+    while(!(this->drive_loop_->joinable()))
+    {
+        usleep(1000);
+    }
+
+	this->drive_loop_->join();
+
+    return true; 
 }
 
 void raspmotor::ResetMotor()
@@ -647,4 +661,18 @@ bool raspmotor::Drive()
     PostMotorDrive();
     
     return true;
+}
+
+void raspmotor::DriveLoop(void* arg)
+{
+    raspmotor* this_ = (raspmotor*)arg;
+
+    while(this_->is_run_)
+    {
+      this_->Drive();
+
+      usleep(1000);
+    }
+
+    return;
 }

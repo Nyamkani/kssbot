@@ -4,6 +4,8 @@
 #include <thread>
 #include <iostream>		// Include all needed libraries here
 #include <cmath>
+#include <unistd.h>
+
 /*
  +-----+-----+---------+------+---+---Pi 4B--+---+------+---------+-----+-----+
  | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
@@ -96,6 +98,8 @@ class raspmotor
         std::vector<pwm_motor_val> pwm_left_motor_queue; 
         std::vector<pwm_motor_val> pwm_right_motor_queue; 
 
+        std::thread* drive_loop_{nullptr};
+
     //--------------------------------------------Functions   
     public:
         raspmotor();
@@ -108,9 +112,9 @@ class raspmotor
 
         void Initialize();
 
-        void ActivateMotor();
+        bool ActivateMotor();
 
-        void DeactivateMotor();
+        bool DeactivateMotor();
 
         void ResetMotor();
 
@@ -119,6 +123,8 @@ class raspmotor
         void LinkRosToRasp(double l_motor_cmd, double r_motor_cmd);
 
         bool Drive();
+
+        static void DriveLoop(void* arg);
 
     
     private:
